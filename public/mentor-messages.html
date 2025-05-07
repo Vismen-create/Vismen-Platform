@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mentor Messages</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      background: #f4f6fc;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background: #043ca1;
+      color: white;
+      padding: 20px 0;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 15px 20px;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+    .sidebar ul li.active,
+    .sidebar ul li:hover {
+      background-color: #1565c0;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 10px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    .content {
+      display: flex;
+      flex: 1;
+    }
+    .chat-list {
+      width: 300px;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      padding: 20px;
+    }
+    .chat-list input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .chat-user {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    .chat-user:hover {
+      background-color: #f1f1f1;
+    }
+    .chat-user img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .chat-area {
+      flex: 1;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      position: relative;
+    }
+    .empty, .chat-thread {
+      text-align: center;
+      color: #777;
+      margin-top: 100px;
+    }
+    .chat-thread {
+      text-align: left;
+      margin-top: 0;
+    }
+    .message {
+      background: #f0f0f0;
+      padding: 10px;
+      margin-bottom: 10px;
+      max-width: 60%;
+      border-radius: 8px;
+    }
+    .message.user {
+      background: #cce5ff;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px 0 0;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px 0 0 8px;
+    }
+    .chat-input button {
+      background: #2575fc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    footer {
+      background: #043ca1;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>VISMEN</h2>
+    <ul>
+      <li><a href="mentor-dashboard.html">Dashboard</a></li>
+      <li><a href="mentor-bookings.html">Bookings</a></li>
+      <li><a href="mentor-earnings.html">Earnings</a></li>
+      <li class="active"><a href="mentor-messages.html">Messages</a></li>
+      <li><a href="mentor-profile.html">Profile</a></li>
+    </ul>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="navbar">
+      <h1>Mentor Panel</h1>
+      <nav>
+        <a href="#">Browse All Mentors</a>
+        <a href="#">Membership</a>
+        <a href="#">Become a Mentor</a>
+      </nav>
+    </div>
+
+    <div class="content">
+      <!-- Chat List -->
+      <div class="chat-list">
+        <input type="text" placeholder="Search Mentors" />
+        <div class="chat-user" onclick="openChat('Divya Gupta')">
+          <img src="Mentor1.jpg" alt="Divya" />
+          <span>Divya Gupta</span>
+        </div>
+        <div class="chat-user" onclick="openChat('Rajan Batra')">
+          <img src="Mentor2.jpg" alt="Rajan" />
+          <span>Rajan Batra</span>
+        </div>
+      </div>
+
+      <!-- Chat Area -->
+      <div class="chat-area">
+        <div id="chatContent" class="empty">
+          <img src="https://cdn-icons-png.flaticon.com/512/10335/10335900.png" alt="Empty" width="60" />
+          <p><strong>Your inbox is empty</strong></p>
+          <p>Message your mentor to start a conversation</p>
+        </div>
+
+        <div class="chat-input">
+          <input type="text" placeholder="Type a message..." />
+          <button>&#9658;</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2025 VisMen IT Solutions. All rights reserved.</footer>
+  </div>
+
+  <script>
+    function openChat(name) {
+      const chatContent = document.getElementById('chatContent');
+      chatContent.className = 'chat-thread';
+      chatContent.innerHTML = `
+        <h3>Chat with ${name}</h3>
+        <div class="message">Hi ${name}, I have a few questions about our last session.</div>
+        <div class="message user">Sure, ask me anytime!</div>
+        <div class="message">Thanks, can you review my code later today?</div>
+      `;
+    }
+  </script>
+</body>
+</html>

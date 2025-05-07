@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentee Signup - VisMen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: linear-gradient(to right, #4f46e5, #f97316);
+      padding: 20px 40px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      color: white !important;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    .signup-section {
+      position: relative;
+      padding: 80px 20px;
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .signup-section::before,
+    .signup-section::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-image: radial-gradient(#f97316 1px, transparent 1px);
+      background-size: 10px 10px;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .signup-section::before {
+      top: -30px;
+      left: -30px;
+    }
+
+    .signup-section::after {
+      bottom: -30px;
+      right: -30px;
+    }
+
+    .signup-form {
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    input, select, textarea {
+      padding: 14px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #4f46e5;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+
+    button {
+      background: #f97316;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #ea580c;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(to right, #4f46e5, #f97316);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo" style="text-decoration: none;">VISMEN</a>
+  <nav>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<section class="signup-section">
+  <div class="signup-form">
+    <h2>Create Your Mentor Account</h2>
+    <form id="mentorSignupForm" action="/mentor-signup" method="POST">
+      <input type="text" name="fullname" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email Address" required>
+      <input type="tel" name="mobile" placeholder="Mobile Number" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <select name="interests" required>
+        <option value="">Select Area of Interest</option>
+        <option value="QA Testing">QA Testing</option>
+        <option value="Web Development">Web Development</option>
+        <option value="Cloud Computing">Cloud Computing</option>
+        <option value="DevOps">DevOps</option>
+        <option value="Data Engineering">Data Engineering</option>
+        <option value="AI/ML">AI/ML</option>
+        <option value="Backend Development">Backend Development</option>
+        <option value="Frontend Development">Frontend Development</option>
+      </select>
+      <select name="experience" required>
+        <option value="">Years of Experience</option>
+        <option value="0">0 (Fresher)</option>
+        <option value="1">1 Year</option>
+        <option value="2">2 Years</option>
+        <option value="3">3 Years</option>
+        <option value="4">4 Years</option>
+        <option value="5+">5+ Years</option>
+      </select>
+      <textarea name="goals" rows="4" placeholder="Your learning goals or expectations" required></textarea>
+      <button type="submit">Create Account</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 VisMen. All rights reserved.
+</footer>
+
+</body>
+</html>

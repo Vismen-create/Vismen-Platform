@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentee Profile</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #003366;
+      color: white;
+      padding: 20px 0;
+      min-height: 100vh;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      padding: 15px 20px;
+      cursor: pointer;
+    }
+
+    .sidebar li.active,
+    .sidebar li:hover {
+      background-color: #004080;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 20px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar nav a {
+      margin-left: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .main-content {
+      flex: 1;
+      background: #f4f6fc;
+      padding: 40px 20px;
+    }
+
+    .profile-container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #1e3a8a;
+      border-bottom: 2px solid #e0e7ff;
+      padding-bottom: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: #374151;
+      width: 50%;
+    }
+
+    .info-value {
+      color: #555;
+      text-align: right;
+      width: 50%;
+    }
+
+    .download-link {
+      color: #2563eb;
+      font-weight: 500;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      background: #04367d;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .info-label, .info-value {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+      }
+
+      .info-row {
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="sidebar">
+    <h2>VISMEN</h2>
+    <ul>
+      <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
+      <li onclick="location.href='mentee-book.html'">Book Sessions</li>
+      <li onclick="location.href='mentee-sessions.html'">My Sessions</li>
+      <li onclick="location.href='mentee-messages.html'">Messages</li>
+      <li class="active">Profile</li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="navbar">
+      <h1>Mentee Panel</h1>
+      <nav>
+        <a href="#">Browse All Mentors</a>
+        <a href="#">Membership</a>
+        <a href="#">Become a Mentor</a>
+      </nav>
+    </div>
+
+    <div class="main-content">
+      <div class="profile-container">
+        <div class="section">
+          <div class="section-title">Personal Information</div>
+          <div class="info-row"><span class="info-label">Full Name:</span><span class="info-value">Anjali Sharma</span></div>
+          <div class="info-row"><span class="info-label">Email:</span><span class="info-value">anjali@example.com</span></div>
+          <div class="info-row"><span class="info-label">Phone:</span><span class="info-value">+91-9876543210</span></div>
+          <div class="info-row"><span class="info-label">Preferred Language:</span><span class="info-value">English</span></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Learning Interests</div>
+          <div class="info-value">React, API Automation, Interview Preparation</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Resume / CV</div>
+          <div class="info-value"><span class="download-link">Download Resume</span></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Security</div>
+          <div class="info-row"><span class="info-label">Login History:</span><span class="info-value">Last login: May 5, 2025</span></div>
+          <div class="info-row"><span class="info-label">Password:</span><span class="info-value">******** <span class="download-link">Change</span></span></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Account Actions</div>
+          <div class="info-value"><span class="download-link">Download My Data</span></div>
+          <div class="info-value"><span class="download-link">Clear History</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 VisMen IT Solutions. All rights reserved.
+</footer>
+
+</body>
+</html>

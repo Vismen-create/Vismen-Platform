@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentee Messages</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrapper {
+      flex: 1;
+      display: flex;
+      height: 100%;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #003366;
+      color: white;
+      padding: 20px 0;
+      height: 100vh;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      padding: 15px 20px;
+      cursor: pointer;
+    }
+
+    .sidebar li.active,
+    .sidebar li:hover {
+      background-color: #004080;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 20px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar nav a {
+      margin-left: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .messages-wrapper {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      background-color: #f4f6fc;
+    }
+
+    .contacts-list {
+      width: 280px;
+      background: #fff;
+      border-right: 1px solid #e2e8f0;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .contact {
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+
+    .contact:hover,
+    .contact.active {
+      background-color: #e0e7ff;
+    }
+
+    .contact img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .contact span {
+      font-weight: 500;
+      color: #1e293b;
+    }
+
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .chat-header {
+      padding: 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #f8fafc;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      max-width: 60%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      font-size: 0.95rem;
+    }
+
+    .sent {
+      background-color: #2563eb;
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 0;
+    }
+
+    .received {
+      background-color: #e2e8f0;
+      color: #111827;
+      margin-right: auto;
+      border-bottom-left-radius: 0;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 15px 20px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 25px;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .chat-input button {
+      background-color: #f97316;
+      color: white;
+      padding: 12px 18px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      background: #04367d;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .contacts-list {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="sidebar">
+      <h2>VISMEN</h2>
+      <ul>
+        <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
+        <li onclick="location.href='mentee-book.html'">Book Sessions</li>
+        <li onclick="location.href='mentee-sessions.html'">My Sessions</li>
+        <li class="active">Messages</li>
+        <li onclick="location.href='mentee-profile.html'">Profile</li>
+      </ul>
+    </div>
+
+    <div class="main">
+      <div class="navbar">
+        <h1>Mentee Panel</h1>
+        <nav>
+          <a href="#">Browse All Mentors</a>
+          <a href="#">Membership</a>
+          <a href="#">Become a Mentor</a>
+        </nav>
+      </div>
+
+      <div class="messages-wrapper">
+        <div class="contacts-list" id="contacts">
+          <div class="contact active" data-name="Raj" onclick="switchChat(this, 0)">
+            <img src="https://randomuser.me/api/portraits/men/11.jpg" />
+            <span>Raj - React Mentor</span>
+          </div>
+          <div class="contact" data-name="Divya" onclick="switchChat(this, 1)">
+            <img src="https://randomuser.me/api/portraits/women/21.jpg" />
+            <span>Divya - Career Coach</span>
+          </div>
+          <div class="contact" data-name="Ravi" onclick="switchChat(this, 2)">
+            <img src="https://randomuser.me/api/portraits/men/31.jpg" />
+            <span>Ravi - DevOps Expert</span>
+          </div>
+        </div>
+
+        <div class="chat-area">
+          <div class="chat-header" id="chatHeader">Chat with Raj</div>
+          <div class="chat-messages" id="chatBox">
+            <div class="message received">Hello Anjali! Ready for today’s session?</div>
+            <div class="message sent">Hi Raj! Yes, looking forward to it.</div>
+          </div>
+          <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type a message..." />
+            <button onclick="sendMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 VisMen IT Solutions. All rights reserved.
+  </footer>
+
+  <script>
+    const messages = [
+      [
+        { type: 'received', text: 'Hello Anjali! Ready for today’s session?' },
+        { type: 'sent', text: 'Hi Raj! Yes, looking forward to it.' },
+      ],
+      [
+        { type: 'received', text: 'Hi Anjali, how’s your resume prep going?' },
+        { type: 'sent', text: 'Need feedback on my draft. Can you help?' },
+      ],
+      [
+        { type: 'received', text: 'Good evening Anjali! Do you need help with CI/CD?' },
+        { type: 'sent', text: 'Yes, especially on GitHub Actions.' },
+      ]
+    ];
+
+    let currentChat = 0;
+
+    function switchChat(el, index) {
+      currentChat = index;
+      document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+
+      const chatBox = document.getElementById('chatBox');
+      const header = document.getElementById('chatHeader');
+      header.textContent = 'Chat with ' + el.dataset.name;
+
+      chatBox.innerHTML = '';
+      messages[index].forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'message ' + msg.type;
+        div.textContent = msg.text;
+        chatBox.appendChild(div);
+      });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const div = document.createElement('div');
+      div.className = 'message sent';
+      div.textContent = text;
+      document.getElementById('chatBox').appendChild(div);
+
+      messages[currentChat].push({ type: 'sent', text });
+      input.value = '';
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentee - Book Sessions</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6fc;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 220px;
+      background-color: #0437a1;
+      padding: 20px 0;
+      color: white;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
+      padding: 15px 20px;
+      cursor: pointer;
+    }
+
+    .sidebar ul li:hover,
+    .sidebar ul li.active {
+      background-color: #1565c0;
+    }
+
+    .main {
+      margin-left: 220px;
+      width: calc(100% - 220px);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 20px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h1 {
+      margin: 0;
+    }
+
+    .navbar nav a {
+      margin-left: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .search-bar {
+      margin-bottom: 30px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .mentor-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .mentor-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+      width: 300px;
+      padding: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .mentor-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .mentor-card img {
+      width: 100%;
+      border-radius: 8px;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .mentor-card h3 {
+      margin: 15px 0 5px;
+      color: #0d1c5a;
+    }
+
+    .mentor-card p {
+      margin: 0 0 10px;
+      color: #333;
+    }
+
+    .tags {
+      margin: 10px 0;
+    }
+
+    .tags span {
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin: 2px;
+      display: inline-block;
+      font-size: 13px;
+    }
+
+    .book-btn {
+      margin-top: 10px;
+      background-color: #ff6b00;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .footer {
+      background-color: #0437a1;
+      color: white;
+      text-align: center;
+      padding: 15px 10px;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>VISMEN</h2>
+    <ul>
+        <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
+        <li class="active">Book Sessions</li>
+        <li onclick="location.href='mentee-sessions.html'">My Sessions</li>
+      <li>Messages</li>
+      <li>Profile</li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="navbar">
+      <h1>Mentee Panel</h1>
+      <nav>
+        <a href="#">Browse All Mentors</a>
+        <a href="#">Membership</a>
+        <a href="#">Become a Mentor</a>
+      </nav>
+    </div>
+
+    <div class="content">
+      <h2>Browse & Book Your Mentor</h2>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search Mentors by name, skill, or company..." onkeyup="filterMentors()">
+      </div>
+
+      <div class="mentor-grid" id="mentorGrid">
+        <div class="mentor-card" data-name="raj react google">
+          <img src="https://randomuser.me/api/portraits/women/75.jpg" alt="Raj">
+          <h3>Raj - React Expert</h3>
+          <p>Senior Developer at Google</p>
+          <div class="tags">
+            <span>React</span><span>JavaScript</span><span>UI</span>
+          </div>
+          <button class="book-btn">Book Session →</button>
+        </div>
+
+        <div class="mentor-card" data-name="divya qa amazon">
+          <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Divya">
+          <h3>Divya - QA Mentor</h3>
+          <p>QA Lead at Amazon</p>
+          <div class="tags">
+            <span>Selenium</span><span>Playwright</span><span>JIRA</span>
+          </div>
+          <button class="book-btn">Book Session →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2025 VisMen IT Solutions. All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    function filterMentors() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const mentors = document.querySelectorAll(".mentor-card");
+
+      mentors.forEach(card => {
+        const name = card.getAttribute("data-name");
+        card.style.display = name.includes(input) ? "block" : "none";
+      });
+    }
+  </script>
+</body>
+</html>

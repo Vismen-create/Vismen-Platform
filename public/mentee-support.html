@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentee Support</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wrapper {
+      flex: 1;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #003366;
+      color: white;
+      padding: 20px 0;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      padding: 15px 20px;
+      cursor: pointer;
+    }
+
+    .sidebar li.active,
+    .sidebar li:hover {
+      background-color: #004080;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 20px 30px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h1 {
+      margin: 0;
+    }
+
+    .navbar nav a {
+      margin-left: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      background-color: #f4f6fc;
+    }
+
+    .support-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .support-section h2 {
+      margin-top: 0;
+    }
+
+    .faq {
+      margin-top: 20px;
+    }
+
+    .faq p {
+      margin: 8px 0;
+    }
+
+    .contact-form label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 500;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .contact-form button {
+      margin-top: 15px;
+      background-color: #ff6a00;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      background: #04367d;
+      padding: 20px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sidebar">
+      <h2>VISMEN</h2>
+      <ul>
+        <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
+        <li onclick="location.href='mentee-book.html'">Book Sessions</li>
+        <li onclick="location.href='mentee-sessions.html'">My Sessions</li>
+        <li onclick="location.href='mentee-messages.html'">Messages</li>
+        <li onclick="location.href='mentee-profile.html'">Profile</li>
+        <li class="active" onclick="location.href='mentee-support.html'">Support & Help</li>
+      </ul>
+    </div>
+
+    <div class="main">
+      <div class="navbar">
+        <h1>Mentee Panel</h1>
+        <nav>
+          <a href="#">Browse All Mentors</a>
+          <a href="#">Membership</a>
+          <a href="#">Become a Mentor</a>
+        </nav>
+      </div>
+
+      <div class="main-content">
+        <div class="support-section">
+          <h2>Need Help?</h2>
+          <p>If you have any issues or questions, feel free to check our FAQs or reach out to us using the form below.</p>
+
+          <div class="faq">
+            <h3>FAQs</h3>
+            <p><strong>Q:</strong> How do I book a mentor session?</p>
+            <p><strong>A:</strong> Go to "Book Sessions", browse mentors, and click on "Book Session".</p>
+            <p><strong>Q:</strong> Can I cancel a session?</p>
+            <p><strong>A:</strong> Yes, go to "My Sessions" and choose the cancel option before 24 hrs.</p>
+          </div>
+
+          <div class="contact-form">
+            <h3>Contact Support</h3>
+            <form>
+              <label for="name">Full Name</label>
+              <input type="text" id="name" placeholder="Enter your full name" />
+
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="Enter your email" />
+
+              <label for="message">Message</label>
+              <textarea id="message" rows="4" placeholder="Describe your issue or query..."></textarea>
+
+              <button type="submit">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 VisMen IT Solutions. All rights reserved.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[
+  {
+    "fullname": "Amju",
+    "email": "amju460@gmail.com",
+    "mobile": "8686450350",
+    "password": "123456789",
+    "interests": "Web Development",
+    "experience": "3",
+    "goals": "I am interested."
+  },
+  {
+    "fullname": "Raja",
+    "email": "rajaeeda@gmail.com",
+    "mobile": "8247545491",
+    "password": "123456",
+    "interests": "QA Testing",
+    "experience": "4",
+    "goals": "I am interested."
+  }
+]

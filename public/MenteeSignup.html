@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentee Signup - VisMen</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9fafb;
+    }
+
+    .header {
+      background: linear-gradient(to right, #6b21a8, #2563eb);
+      padding: 20px 40px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 40px 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+
+    .container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      padding: 20px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">VISMEN</div>
+    <div><a href="login.html" style="color: white; text-decoration: none;">Login</a></div>
+  </div>
+
+  <div class="container">
+    <h2>Create Your Mentee Account</h2>
+    <form id="menteeSignupForm" method="POST" action="/mentee-signup">
+      <input type="text" name="fullname" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="tel" name="mobile" placeholder="Mobile Number" required />
+      <input type="password" name="password" placeholder="Password" required />
+
+      <select name="interests" required>
+        <option value="">Select Area of Interest</option>
+        <option value="QA Testing">QA Testing</option>
+        <option value="Web Development">Web Development</option>
+        <option value="Cloud Computing">Cloud Computing</option>
+        <option value="DevOps">DevOps</option>
+        <option value="AI/ML">AI/ML</option>
+        <option value="Backend Development">Backend Development</option>
+        <option value="Frontend Development">Frontend Development</option>
+      </select>
+
+      <input type="number" name="experience" placeholder="Years of Experience" required />
+
+      <textarea name="goals" placeholder="Your learning goals or expectations" rows="4"></textarea>
+
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 VisMen IT Solutions. All rights reserved.
+  </footer>
+
+</body>
+</html>

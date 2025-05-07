@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentor Bookings - VisMen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      display: flex;
+      background: #f4f6fc;
+      min-height: 100vh;
+    }
+    .sidebar {
+  background: #0d47a1;
+  color: white;
+  width: 220px;
+  padding-top: 30px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+}
+
+.sidebar h2 {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+}
+
+.sidebar ul li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active {
+  background: #1565c0;
+}
+
+
+
+.sidebar ul li a:hover,
+.sidebar ul li.active a {
+  background-color: #1565c0;
+  border-radius: 5px;
+}
+
+    .main {
+      margin-left: 220px;
+      width: calc(100% - 220px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6b21a8, #2563eb);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar h1 {
+      font-size: 1.5rem;
+    }
+
+    .navbar nav a {
+      color: white;
+      margin-left: 20px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .container {
+      padding: 30px;
+      background: #f4f6fc;
+      flex-grow: 1;
+    }
+
+    .container h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      background: white;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: #2563eb;
+      color: white;
+      border: none;
+    }
+
+    .booking-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .booking-table th,
+    .booking-table td {
+      padding: 16px;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .booking-table th {
+      background: #f4f6fc;
+    }
+
+    .status-join {
+      background: #2563eb;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .status-recording {
+      background: #2196f3;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .status-missed {
+      background: #e53935;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    footer {
+      background: #0d47a1;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+
+  </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>VISMEN</h2>
+        <ul>
+          <li><a href="mentor-dashboard.html">Dashboard</a></li>
+          <li class="active"><a href="mentor-bookings.html">Bookings</a></li>
+          <li class="active"><a href="mentor-earnings.html">Earnings</a></li>
+          <li><a href="mentor-messages.html">Messages</a></li>
+          <li><a href="mentor-profile.html">Profile</a></li>
+        </ul>
+      </div>
+      
+
+  <div class="main">
+    <div class="navbar">
+      <h1>Mentor Panel</h1>
+      <nav>
+        <a href="#">Browse All Mentors</a>
+        <a href="#">Membership</a>
+        <a href="#">Become a Mentor</a>
+      </nav>
+    </div>
+
+    <div class="container">
+      <h2>Bookings</h2>
+      <input type="text" class="search-input" placeholder="Search by student or session type" />
+
+      <div class="tabs">
+        <div class="tab active">Today</div>
+        <div class="tab">Upcoming</div>
+        <div class="tab">Completed</div>
+        <div class="tab">Canceled</div>
+      </div>
+
+      <table class="booking-table">
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>Student</th>
+            <th>Session Type</th>
+            <th>Meeting Link</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Apr 14, 5:30 PM</td>
+            <td>Rahul M.</td>
+            <td>React Bug Fix</td>
+            <td><span class="status-join">Join</span></td>
+            <td>Upload Materials</td>
+          </tr>
+          <tr>
+            <td>Apr 14, 7:00 PM</td>
+            <td>Swetha R.</td>
+            <td>Interview Prep</td>
+            <td><span class="status-join">Join</span></td>
+            <td>Message Student</td>
+          </tr>
+          <tr>
+            <td>Apr 13, 8:00 PM</td>
+            <td>Ramesh T.</td>
+            <td>Resume Review</td>
+            <td><span class="status-recording">Recording</span></td>
+            <td>Reschedule / Notes</td>
+          </tr>
+          <tr>
+            <td>Apr 12, 4:00 PM</td>
+            <td>Deepti S.</td>
+            <td>Final Project</td>
+            <td><span class="status-missed">Missed</span></td>
+            <td>Chat Materials</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer>
+      © 2025 VisMen IT Solutions. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
