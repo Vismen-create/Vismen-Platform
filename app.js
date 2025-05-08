@@ -102,7 +102,13 @@ app.post('/mentee-signup', async (req, res) => {
       return res.send(`<script>alert("Mentee already registered."); window.location.href = "/MenteeSignup.html";</script>`);
     }
 
-    const newMentee = new Mentee({ fullname, email, mobile, password });
+    const newMentee = new Mentee({
+      fullname,
+      email: email.toLowerCase().trim(),
+      mobile,
+      password: password.trim()
+    });
+git     
     await newMentee.save();
 
     console.log("✅ Mentee saved:", newMentee);
@@ -117,27 +123,32 @@ app.post('/mentee-signup', async (req, res) => {
 // ✅ Login
 // ✅ Login using MongoDB for Mentors
 app.post('/login', async (req, res) => {
-  const { email, password, role } = req.body;
+  let { email, password, role } = req.body;
+  email = email.trim().toLowerCase();
+  password = password.trim();
 
   try {
     if (role.toLowerCase() === 'mentor') {
       const mentor = await Mentor.findOne({ email, password });
+      console.log("🧠 Mentor Login Attempt:", mentor);
       if (mentor) {
         return res.json({ success: true, email });
       } else {
         return res.json({ success: false });
       }
     } else if (role.toLowerCase() === 'mentee') {
-
       const mentee = await Mentee.findOne({ email, password });
+      console.log("🧠 Mentee Login Attempt:", mentee);
       if (mentee) {
         return res.json({ success: true, email });
       } else {
         return res.json({ success: false });
       }
+    } else {
+      return res.status(400).json({ error: "Invalid role" });
     }
   } catch (err) {
-    console.error("Login error:", err);
+    console.error("❌ Login error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
