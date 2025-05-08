@@ -105,6 +105,7 @@ app.post('/mentee-signup', async (req, res) => {
     const newMentee = new Mentee({ fullname, email, mobile, password });
     await newMentee.save();
 
+    console.log("✅ Mentee saved:", newMentee);
     res.send(`<script>alert("Signup successful! Please login."); window.location.href = "/login.html";</script>`);
   } catch (err) {
     console.error("❌ Error saving mentee:", err);

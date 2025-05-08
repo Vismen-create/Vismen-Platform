@@ -1,4 +1,3 @@
-// models/Mentee.js
 const mongoose = require('mongoose');
 
 const menteeSchema = new mongoose.Schema({
