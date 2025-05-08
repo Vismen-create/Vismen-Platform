@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mentee Signup - VisMen</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mentor Signup - VisMen</title>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet">
   <style>
     body {
@@ -137,40 +137,65 @@
 <section class="signup-section">
   <div class="signup-form">
     <h2>Create Your Mentor Account</h2>
-    <form id="mentorSignupForm" action="/mentor-signup" method="POST">
-      <input type="text" name="fullname" placeholder="Full Name" required>
-      <input type="email" name="email" placeholder="Email Address" required>
-      <input type="tel" name="mobile" placeholder="Mobile Number" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <select name="interests" required>
-        <option value="">Select Area of Interest</option>
-        <option value="QA Testing">QA Testing</option>
-        <option value="Web Development">Web Development</option>
-        <option value="Cloud Computing">Cloud Computing</option>
-        <option value="DevOps">DevOps</option>
-        <option value="Data Engineering">Data Engineering</option>
-        <option value="AI/ML">AI/ML</option>
-        <option value="Backend Development">Backend Development</option>
-        <option value="Frontend Development">Frontend Development</option>
-      </select>
-      <select name="experience" required>
-        <option value="">Years of Experience</option>
-        <option value="0">0 (Fresher)</option>
-        <option value="1">1 Year</option>
-        <option value="2">2 Years</option>
-        <option value="3">3 Years</option>
-        <option value="4">4 Years</option>
-        <option value="5+">5+ Years</option>
-      </select>
-      <textarea name="goals" rows="4" placeholder="Your learning goals or expectations" required></textarea>
+    <form id="mentorSignupForm">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="text" name="title" placeholder="Title (e.g., QA Mentor)" required />
+      <input type="text" name="company" placeholder="Company (e.g., Amazon)" required />
+      <input type="text" name="tags" placeholder="Comma-separated tags" required />
+      <input type="text" name="image" placeholder="Profile Image URL" required />
+      <input type="email" name="email" placeholder="Email Address" required />   <!-- Moved inside -->
+      <input type="password" name="password" placeholder="Password" required /> <!-- Moved inside -->
       <button type="submit">Create Account</button>
     </form>
+    
+    
+    
   </div>
 </section>
 
 <footer>
   &copy; 2025 VisMen. All rights reserved.
 </footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("mentorSignupForm");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const data = {
+        name: form.elements["name"].value,
+        title: form.elements["title"].value,
+        company: form.elements["company"].value,
+        tags: form.elements["tags"].value,
+        image: form.elements["image"].value,
+        email: form.elements["email"].value,
+        password: form.elements["password"].value,
+      };
+
+      try {
+        const res = await fetch("/api/mentors", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await res.json();
+        alert(result.message || result.error);
+
+        if (res.ok) {
+          form.reset();
+          window.location.href = "/login.html";
+        }
+      } catch (error) {
+        alert("Something went wrong. Please try again.");
+        console.error("Signup error:", error);
+      }
+    });
+  });
+</script>
+
 
 </body>
 </html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Mentors - VisMen</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f6fc;
+    }
+
+    header {
+      background: linear-gradient(to right, #4e00c2, #0076d1);
+      padding: 20px 40px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 40px 0 10px;
+      font-size: 2rem;
+      color: #1e293b;
+    }
+
+    .mentor-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 30px;
+      gap: 30px;
+    }
+
+    .mentor-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      width: 260px;
+      padding: 20px;
+      text-align: center;
+      transition: 0.2s ease;
+    }
+
+    .mentor-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .mentor-card img {
+      width: 100%;
+      height: 180px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .mentor-card h3 {
+      margin: 12px 0 5px;
+      font-size: 1.1rem;
+      color: #0f172a;
+    }
+
+    .mentor-card p {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      color: #475569;
+    }
+
+    .tags span {
+      background: #e2e8f0;
+      padding: 5px 10px;
+      margin: 3px;
+      border-radius: 5px;
+      display: inline-block;
+      font-size: 13px;
+    }
+
+    footer {
+      background: #1e1e2f;
+      text-align: center;
+      padding: 20px;
+      margin-top: 255px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="logo">VISMEN</a>
+    <nav>
+      <a href="browse-mentors.html">Browse All Mentors</a>
+      <a href="#">Membership</a>
+      <a href="MentorSignup.html">Become a Mentor</a>
+    </nav>
+  </header>
+
+  <h1>Browse All Mentors</h1>
+
+  <div class="mentor-grid" id="mentorGrid">
+    <!-- Mentor cards will be injected here -->
+  </div>
+
+  <footer>
+    © 2025 VisMen IT Solutions. All rights reserved.
+  </footer>
+
+  <script>
+   async function loadMentors() {
+  const res = await fetch("/api/mentors");
+  const mentors = await res.json();
+  const grid = document.getElementById("mentorGrid");
+
+  grid.innerHTML = "";
+
+  mentors.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "mentor-card";
+    card.style.cursor = "pointer";
+
+    // Make the entire card clickable
+    card.onclick = () => {
+        window.location.href = `mentor-public-profile.html?email=${encodeURIComponent(m.email)}`;
+    };
+
+    card.innerHTML = `
+      <img src="${m.image || 'https://randomuser.me/api/portraits/lego/1.jpg'}" alt="${m.name}">
+      <h3>${m.name}</h3>
+      <p>${m.title}</p>
+      <p>${m.company}</p>
+      <div class="tags">
+        ${m.tags.map(t => `<span>${t}</span>`).join("")}
+      </div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+
+    window.onload = loadMentors;
+  </script>
+
+<script>
+  const menteeEmail = localStorage.getItem('menteeEmail');
+  if (!menteeEmail) {
+    alert("Please log in as a mentee to continue.");
+    window.location.href = "/login.html";
+  }
+</script>
+
+
+</body>
+</html>

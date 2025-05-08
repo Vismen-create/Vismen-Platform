@@ -251,14 +251,17 @@
     const result = await res.json();
 
     if (result.success) {
-      const redirectPage = role === 'Mentor' ? 'mentor-dashboard.html' : 'mentee-dashboard.html';
-      window.location.href = `/${redirectPage}?email=${encodeURIComponent(email)}`;
+      if (role === 'Mentee') {
+        localStorage.setItem('menteeEmail', email); // ✅ Save mentee login
+        window.location.href = '/mentee-dashboard.html';
+      } else {
+        window.location.href = `/mentor-dashboard.html?email=${encodeURIComponent(email)}`;
+      }
     } else {
-      alert('Invalid credentials');
+      alert('Invalid email or password. Please try again.');
     }
   });
 </script>
-
 
 </body>
 </html>

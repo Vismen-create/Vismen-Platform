@@ -263,5 +263,15 @@
       © 2025 VisMen IT Solutions. All rights reserved.
     </footer>
   </div>
+
+
+  <script>
+    const menteeEmail = localStorage.getItem('menteeEmail');
+    if (!menteeEmail) {
+      alert("Please log in as a mentee to continue.");
+      window.location.href = "/login.html";
+    }
+  </script>
+  
 </body>
 </html>

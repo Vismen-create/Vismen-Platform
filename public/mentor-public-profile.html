@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentor Public Profile - VisMen</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6fc;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      background: linear-gradient(to right, #4e00c2, #0076d1);
+      color: white;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    .container {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 50px 20px;
+    }
+
+    .profile-card {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    .profile-card h2 {
+      text-align: center;
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    .profile-card p {
+      margin: 5px 0;
+      font-size: 15px;
+    }
+
+    .profile-card strong {
+      display: inline-block;
+      width: 80px;
+    }
+
+    .tags {
+      margin-top: 20px;
+    }
+
+    .tags span {
+      background: #d1d5db;
+      color: #111827;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin: 3px;
+      display: inline-block;
+    }
+
+    .book-btn {
+      margin-top: 25px;
+      background-color: #f97316;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      display: block;
+      width: 100%;
+    }
+
+    footer {
+      background-color: #1e1e2f;
+      color: #cbd5e1;
+      text-align: center;
+      padding: 20px 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">VISMEN</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="browse-mentors.html">Browse All Mentors</a>
+      <a href="MentorSignup.html">Become a Mentor</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="profile-card" id="mentorProfile">
+      Loading mentor profile...
+    </div>
+  </div>
+
+  <footer>
+    © 2025 VisMen IT Solutions. All rights reserved.
+  </footer>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get('email');
+
+    async function loadMentor() {
+      const res = await fetch(`/get-mentor-data?email=${email}`);
+      const data = await res.json();
+
+      const container = document.getElementById('mentorProfile');
+
+      if (data.error) {
+        container.innerHTML = `<p>${data.error}</p>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <img src="${data.image || 'https://via.placeholder.com/120'}" alt="${data.name}" />
+        <h2>${data.name}</h2>
+        <p><strong>Title:</strong> ${data.title}</p>
+        <p><strong>Company:</strong> ${data.company}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+
+        <div class="tags">
+          <strong>Tags / Skills</strong><br />
+          ${(data.tags || []).map(tag => `<span>${tag}</span>`).join('')}
+        </div>
+
+        <button class="book-btn" onclick="redirectToBooking()">Book This Mentor</button>
+
+      `;
+    }
+
+    loadMentor();
+  </script>
+
+<script>
+    function redirectToBooking() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+      if (email) {
+        window.location.href = `/book-session.html?email=${encodeURIComponent(email)}`;
+      } else {
+        alert("Email not found.");
+      }
+    }
+  </script>
+  
+</body>
+</html>

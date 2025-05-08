@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Mentor Session</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6fc;
+      color: #1e293b;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    .booking-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 30px;
+    }
+
+    .left, .right {
+      flex: 1;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .time-slots button,
+    .session-type button,
+    .payment-options button {
+      margin: 8px 5px;
+      padding: 10px 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .confirm-btn {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #f97316;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .confirm-btn:hover {
+      background-color: #ea580c;
+    }
+
+    .mentor-card {
+      background-color: #f9fafb;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .mentor-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .footer {
+      background-color: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div><strong>VISMEN</strong></div>
+    <div>
+      <a href="/index.html">Home</a>
+      <a href="/browse-mentors.html">Browse All Mentors</a>
+      <a href="/MentorSignup.html">Become a Mentor</a>
+    </div>
+  </div>
+
+  <div class="booking-container">
+    <div class="left">
+      <h2>Book a Session with <span id="mentorName">Mentor</span></h2>
+
+      <label for="date">Pick a Date & Time</label>
+      <div class="time-slots">
+        <button>Thu 25 - 7:00 PM</button>
+        <button>Fri 26 - 9:30 PM</button>
+        <button>Sat 27 - 8:00 PM</button>
+      </div>
+
+      <label for="session">Select Session Type</label>
+      <div class="session-type">
+        <button>Bug Fix Support (30 mins)</button>
+        <button>Interview Prep (45 mins)</button>
+        <button>Project Guidance (60 mins)</button>
+      </div>
+
+      <label for="desc">Describe Your Problem</label>
+      <textarea id="desc" rows="4" placeholder="Describe your problem here..."></textarea>
+
+      <label for="upload">Upload File (optional)</label>
+      <input type="file" id="upload" />
+
+      <label for="payment">Payment Options</label>
+      <div class="payment-options">
+        <button>UPI</button>
+        <button>GPay</button>
+        <button>Paytm</button>
+        <button>Card</button>
+      </div>
+
+      <button class="confirm-btn">Confirm & Book Session</button>
+    </div>
+
+    <div class="right mentor-card">
+      <img src="/Mentor1.jpg" alt="Mentor" />
+      <h3 id="mentorNameRight">Mentor</h3>
+      <p><strong>Full Stack Mentor</strong></p>
+      <p>Helped 500+ students crack interviews</p>
+      <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 VisMen IT Solutions. All rights reserved.
+  </div>
+
+  <script>
+    // Set mentor name from URL param if passed
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const mentorName = email?.split('@')[0] || "Mentor";
+    document.getElementById('mentorName').textContent = mentorName;
+    document.getElementById('mentorNameRight').textContent = mentorName;
+  </script>
+
+<script>
+    const menteeEmail = localStorage.getItem('menteeEmail');
+    if (!menteeEmail) {
+      alert("Please log in as a mentee to continue.");
+      window.location.href = "/login.html";
+    }
+  </script>
+  
+</body>
+</html>

@@ -7,5 +7,32 @@
     "interests": "Frontend Development",
     "experience": "0",
     "goals": "I am new learner"
+  },
+  {
+    "fullname": "Amju",
+    "email": "amju123@gmil.com",
+    "mobile": "9030409062",
+    "password": "123456",
+    "interests": "DevOps",
+    "experience": "5",
+    "goals": ""
+  },
+  {
+    "fullname": "Madhu",
+    "email": "admin@gmail.com",
+    "mobile": "8686450350",
+    "password": "123456",
+    "interests": "Frontend Development",
+    "experience": "2",
+    "goals": "Hi"
+  },
+  {
+    "fullname": "Raja",
+    "email": "rajaeeda@gmail.com",
+    "mobile": "9030409062",
+    "password": "123456",
+    "interests": "Backend Development",
+    "experience": "5",
+    "goals": "Hi"
   }
 ]

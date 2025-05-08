@@ -4,13 +4,66 @@ const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
+
 const mentorsFile = path.join(__dirname, 'data', 'mentors.json');
+const menteesFile = path.join(__dirname, 'data', 'mentees.json');
+const Mentee = require('./models/Mentee'); // 
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Handle mentor signup
+
+const mongoose = require('mongoose');
+
+mongoose.connect("mongodb://localhost:27017/vismen", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ MongoDB connection error", err));
+
+
+  const Mentor = require('./models/Mentor'); // 👈 Import the model
+
+// ✅ Save mentor to MongoDB
+app.post("/api/mentors", async (req, res) => {
+  const { name, title, company, tags, image } = req.body;
+
+  try {
+    const { name, title, company, tags, image, email, password } = req.body;
+
+    const newMentor = new Mentor({
+      name,
+      title,
+      company,
+      tags: tags.split(',').map(tag => tag.trim()),
+      image,
+      email,
+      password
+    });
+
+    await newMentor.save();
+    res.status(201).json({ message: "Mentor registered successfully!" });
+  } catch (err) {
+    console.error("❌ Error saving mentor:", err);
+    res.status(500).json({ error: "Server error while saving mentor." });
+  }
+});
+
+
+app.get("/api/mentors", async (req, res) => {
+  try {
+    const mentors = await Mentor.find();
+    res.json(mentors);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to load mentors." });
+  }
+});
+
+
+
+// ✅ Mentor Signup
 app.post('/mentor-signup', (req, res) => {
   const newMentor = req.body;
 
@@ -30,90 +83,97 @@ app.post('/mentor-signup', (req, res) => {
   });
 });
 
-// Handle login
-app.post('/login', (req, res) => {
-  const { email, password, role } = req.body;
-  const dataFile = role === 'Mentor' ? mentorsFile : menteesFile;
 
-  fs.readFile(dataFile, 'utf8', (err, data) => {
-    if (err) return res.status(500).json({ error: 'Server error' });
+// ✅ Mentee Signup
+app.post('/mentee-signup', async (req, res) => {
+  const { fullname, email, mobile, password } = req.body;
 
-    const users = data ? JSON.parse(data) : [];
-    const match = users.find(u => u.email === email && u.password === password);
-
-    if (match) {
-      res.json({ success: true, email });
-    } else {
-      res.json({ success: false });
-    }
-  });
-});
-
-
-
-
-
-// ✅ Get Mentor Data by Email (for dynamic dashboard)
-app.get('/get-mentor-data', (req, res) => {
-  const email = req.query.email;
-
-  fs.readFile(mentorsFile, 'utf8', (err, data) => {
-    if (err) return res.status(500).json({ error: 'Server error' });
-
-    const mentors = JSON.parse(data || '[]');
-    const mentor = mentors.find(m => m.email === email);
-
-    if (mentor) {
-      res.json(mentor);
-    } else {
-      res.status(404).json({ error: 'Mentor not found' });
-    }
-  });
-});
-
-
-const menteesFile = path.join(__dirname, 'data', 'mentees.json');
-
-// Handle mentee signup
-app.post('/mentee-signup', (req, res) => {
-  const newMentee = req.body;
-
-  fs.readFile(menteesFile, 'utf8', (err, data) => {
-    const mentees = data ? JSON.parse(data) : [];
-    const exists = mentees.find(m => m.email === newMentee.email);
-
+  try {
+    const exists = await Mentee.findOne({ email });
     if (exists) {
       return res.send(`<script>alert("Mentee already registered."); window.location.href = "/MenteeSignup.html";</script>`);
     }
 
-    mentees.push(newMentee);
-    fs.writeFile(menteesFile, JSON.stringify(mentees, null, 2), err => {
-      if (err) return res.status(500).send("Server error");
-      res.send(`<script>alert("Signup successful! Please login."); window.location.href = "/login.html";</script>`);
-    });
-  });
+    const newMentee = new Mentee({ fullname, email, mobile, password });
+    await newMentee.save();
+
+    res.send(`<script>alert("Signup successful! Please login."); window.location.href = "/login.html";</script>`);
+  } catch (err) {
+    console.error("❌ Error saving mentee:", err);
+    res.status(500).send("Server error while saving mentee");
+  }
 });
 
-// Get Mentee Data by Email
-app.get('/get-mentee-data', (req, res) => {
+
+// ✅ Login
+// ✅ Login using MongoDB for Mentors
+app.post('/login', async (req, res) => {
+  const { email, password, role } = req.body;
+
+  try {
+    if (role.toLowerCase() === 'mentor') {
+      const mentor = await Mentor.findOne({ email, password });
+      if (mentor) {
+        return res.json({ success: true, email });
+      } else {
+        return res.json({ success: false });
+      }
+    } else if (role.toLowerCase() === 'mentee') {
+
+      const mentee = await Mentee.findOne({ email, password });
+      if (mentee) {
+        return res.json({ success: true, email });
+      } else {
+        return res.json({ success: false });
+      }
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Get Mentor Data by Email (from MongoDB)
+app.get('/get-mentor-data', async (req, res) => {
   const email = req.query.email;
 
-  fs.readFile(menteesFile, 'utf8', (err, data) => {
-    if (err) return res.status(500).json({ error: 'Server error' });
+  try {
+    const mentor = await Mentor.findOne({ email });
 
-    const mentees = JSON.parse(data || '[]');
-    const mentee = mentees.find(m => m.email === email);
-
-    if (mentee) {
-      res.json(mentee);
-    } else {
-      res.status(404).json({ error: 'Mentee not found' });
+    if (!mentor) {
+      return res.status(404).json({ error: 'Mentor not found' });
     }
-  });
+
+    res.json(mentor);
+  } catch (err) {
+    console.error("❌ Error fetching mentor:", err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 
-// Start the server
+// ✅ Get All Mentors from MongoDB
+app.get("/api/mentors", async (req, res) => {
+  try {
+    const mentors = await Mentor.find();
+
+    const formatted = mentors.map(m => ({
+      name: m.name,
+      title: m.title,
+      company: m.company,
+      tags: m.tags,
+      image: m.image
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error("❌ Error loading mentors from DB:", err);
+    res.status(500).json({ error: "Failed to load mentors." });
+  }
+});
+
+
+// ✅ Start the server
 app.listen(PORT, () => {
   console.log(`✅ Server is running at: http://localhost:${PORT}`);
 });

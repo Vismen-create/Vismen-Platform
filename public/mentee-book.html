@@ -185,7 +185,6 @@
       </div>
 
       <div class="mentor-grid" id="mentorGrid">
-        <div class="mentor-card" data-name="raj react google">
           <img src="https://randomuser.me/api/portraits/women/75.jpg" alt="Raj">
           <h3>Raj - React Expert</h3>
           <p>Senior Developer at Google</p>
@@ -195,8 +194,6 @@
           <button class="book-btn">Book Session →</button>
         </div>
 
-        <div class="mentor-card" data-name="divya qa amazon">
-          <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Divya">
           <h3>Divya - QA Mentor</h3>
           <p>QA Lead at Amazon</p>
           <div class="tags">
@@ -223,5 +220,38 @@
       });
     }
   </script>
+
+
+
+<script>
+  async function loadMentors() {
+    const res = await fetch('/api/mentors');
+    const mentors = await res.json();
+    const grid = document.getElementById("mentorGrid");
+
+    grid.innerHTML = ""; // Clear existing static content
+
+    mentors.forEach(m => {
+      const card = document.createElement("div");
+      card.className = "mentor-card";
+      card.setAttribute("data-name", `${m.name} ${m.title} ${m.company}`.toLowerCase());
+
+      card.innerHTML = `
+        <img src="${m.image || 'https://randomuser.me/api/portraits/lego/1.jpg'}" alt="${m.name}">
+        <h3>${m.name} - ${m.title}</h3>
+        <p>${m.company}</p>
+        <div class="tags">
+          ${m.tags.map(tag => `<span>${tag}</span>`).join("")}
+        </div>
+        <button class="book-btn" onclick="alert('Booked session with ${m.name}')">Book Session →</button>
+      `;
+
+      grid.appendChild(card);
+    });
+  }
+
+  window.onload = loadMentors;
+</script>
+
 </body>
 </html>
