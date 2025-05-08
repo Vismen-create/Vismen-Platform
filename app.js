@@ -108,15 +108,16 @@ app.post('/mentee-signup', async (req, res) => {
       mobile,
       password: password.trim()
     });
-git     
+    
     await newMentee.save();
 
     console.log("✅ Mentee saved:", newMentee);
     res.send(`<script>alert("Signup successful! Please login."); window.location.href = "/login.html";</script>`);
   } catch (err) {
-    console.error("❌ Error saving mentee:", err);
-    res.status(500).send("Server error while saving mentee");
+    console.error("❌ Error saving mentee:", err.message);
+    res.status(500).send("Server error while saving mentee: " + err.message);
   }
+  
 });
 
 
