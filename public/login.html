@@ -251,12 +251,14 @@
     const result = await res.json();
 
     if (result.success) {
-      if (role === 'Mentee') {
-        localStorage.setItem('menteeEmail', email); // ✅ Save mentee login
-        window.location.href = '/mentee-dashboard.html';
-      } else {
-        window.location.href = `/mentor-dashboard.html?email=${encodeURIComponent(email)}`;
-      }
+  localStorage.setItem("loggedIn", "true");  // ✅ add this line
+  if (role === 'Mentee') {
+    localStorage.setItem('menteeEmail', email);
+    window.location.href = '/mentee-dashboard.html';
+  } else {
+    window.location.href = `/mentor-dashboard.html?email=${encodeURIComponent(email)}`;
+  }
+
     } else {
       alert('Invalid email or password. Please try again.');
     }

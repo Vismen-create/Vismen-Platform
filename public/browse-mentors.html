@@ -102,6 +102,19 @@
 </head>
 <body>
 
+  <script>
+    if (!localStorage.getItem("loggedIn")) {
+      window.location.href = "/login.html";
+    }
+    const menteeEmail = localStorage.getItem('menteeEmail');
+    if (!menteeEmail) {
+      alert("Please log in as a mentee to continue.");
+      window.location.href = "/login.html";
+    }
+  </script>
+  
+  
+
   <header>
     <a href="index.html" class="logo">VISMEN</a>
     <nav>
@@ -157,13 +170,6 @@
     window.onload = loadMentors;
   </script>
 
-<script>
-  const menteeEmail = localStorage.getItem('menteeEmail');
-  if (!menteeEmail) {
-    alert("Please log in as a mentee to continue.");
-    window.location.href = "/login.html";
-  }
-</script>
 
 
 </body>

@@ -19,7 +19,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
-// const mongoose = require('mongoose');
+
+console.log("Connecting to MongoDB with URI:", process.env.MONGO_URI);
+
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -183,7 +185,8 @@ app.get("/api/mentors", async (req, res) => {
       title: m.title,
       company: m.company,
       tags: m.tags,
-      image: m.image
+      image: m.image,
+      email: m.email
     }));
 
     res.json(formatted);
