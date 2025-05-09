@@ -130,7 +130,6 @@
         <li onclick="location.href='mentee-messages.html'">Messages</li>
         <li onclick="location.href='mentee-profile.html'">Profile</li>
         <li onclick="location.href='mentee-support.html'">Support</li>
-
       </ul>
     </div>
 
@@ -138,9 +137,9 @@
       <div class="navbar">
         <h1>Mentee Panel</h1>
         <nav>
-          <a href="#">Browse All Mentors</a>
+          <a href="browse-mentors.html">Browse All Mentors</a>
           <a href="#">Membership</a>
-          <a href="#">Become a Mentor</a>
+          <a href="MentorSignup.html">Become a Mentor</a>
         </nav>
       </div>
 
@@ -149,12 +148,12 @@
         <div class="cards">
           <div class="card">
             <h3>Total Sessions Booked</h3>
-            <p>8 Sessions</p>
+            <p id="sessionCount">Loading...</p>
           </div>
           <div class="card">
             <h3>Upcoming Session</h3>
-            <p>May 8, 2025 - 6:00 PM</p>
-            <p>with Raj (React Mentor)</p>
+            <p id="upcomingDate">Loading...</p>
+            <p id="mentorInfo"></p>
           </div>
           <div class="card">
             <h3>Need a quick session?</h3>
@@ -169,24 +168,34 @@
     © 2025 VisMen IT Solutions. All rights reserved.
   </footer>
 
-
-
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-  
-    async function loadMentee() {
-      const res = await fetch(`/get-mentee-data?email=${email}`);
-      const mentee = await res.json();
-  
-      if (mentee.fullname) {
-        document.getElementById('welcome').textContent = `Welcome, ${mentee.fullname} 👋`;
+    const menteeEmail = localStorage.getItem('menteeEmail');
+    if (!menteeEmail) {
+      alert("Please log in to continue.");
+      window.location.href = "/login.html";
+    }
+
+    async function loadMenteeData() {
+      try {
+        const res = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
+        const mentee = await res.json();
+
+        if (mentee.fullname) {
+          document.getElementById("welcome").textContent = `Welcome, ${mentee.fullname} 👋`;
+        }
+
+        // Placeholder static data (replace with actual DB query later)
+        document.getElementById("sessionCount").textContent = "3 Sessions";
+        document.getElementById("upcomingDate").textContent = "May 12, 2025 - 5:00 PM";
+        document.getElementById("mentorInfo").textContent = "with Priya (Java Mentor)";
+      } catch (err) {
+        console.error("Error fetching mentee data:", err);
+        alert("Failed to load mentee data.");
       }
     }
-  
-    loadMentee();
-  </script>
 
+    loadMenteeData();
+  </script>
 
 </body>
 </html>

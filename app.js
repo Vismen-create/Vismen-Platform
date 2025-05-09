@@ -197,6 +197,25 @@ app.get("/api/mentors", async (req, res) => {
 });
 
 
+// ✅ Get Mentee Data by Email (for dashboard)
+app.get('/get-mentee-data', async (req, res) => {
+  const email = req.query.email;
+
+  try {
+    const mentee = await Mentee.findOne({ email });
+
+    if (!mentee) {
+      return res.status(404).json({ error: 'Mentee not found' });
+    }
+
+    res.json(mentee);
+  } catch (err) {
+    console.error("❌ Error fetching mentee:", err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 // ✅ Start the server
 app.listen(PORT, () => {
   console.log(`✅ Server is running at: http://localhost:${PORT}`);
