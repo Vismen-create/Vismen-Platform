@@ -176,26 +176,42 @@
     }
 
     async function loadMenteeData() {
-      try {
-        const res = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
-        const mentee = await res.json();
+  const menteeEmail = localStorage.getItem("menteeEmail");
+  if (!menteeEmail) {
+    alert("Please log in to continue.");
+    window.location.href = "/login.html";
+    return;
+  }
 
-        if (mentee.fullname) {
-          document.getElementById("welcome").textContent = `Welcome, ${mentee.fullname} 👋`;
-        }
-
-        // Placeholder static data (replace with actual DB query later)
-        document.getElementById("sessionCount").textContent = "3 Sessions";
-        document.getElementById("upcomingDate").textContent = "May 12, 2025 - 5:00 PM";
-        document.getElementById("mentorInfo").textContent = "with Priya (Java Mentor)";
-      } catch (err) {
-        console.error("Error fetching mentee data:", err);
-        alert("Failed to load mentee data.");
-      }
+  try {
+    // Fetch mentee name
+    const res1 = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
+    const mentee = await res1.json();
+    if (mentee.fullname) {
+      document.getElementById("welcome").textContent = `Welcome, ${mentee.fullname} 👋`;
     }
 
-    loadMenteeData();
-  </script>
+    // Fetch sessions
+    const res2 = await fetch(`/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
+    const sessions = await res2.json();
+
+    document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
+
+    if (sessions.length > 0) {
+      const upcoming = sessions[0];
+      document.getElementById("upcomingDate").textContent = `${upcoming.date} - ${upcoming.time}`;
+      document.getElementById("mentorInfo").textContent = `with ${upcoming.mentorName} (${upcoming.mentorTech})`;
+    } else {
+      document.getElementById("upcomingDate").textContent = "No upcoming session";
+      document.getElementById("mentorInfo").textContent = "";
+    }
+
+  } catch (err) {
+    console.error("❌ Error loading mentee dashboard data:", err);
+    alert("Failed to load dashboard data.");
+  }
+}
+</script>
 
 </body>
 </html>

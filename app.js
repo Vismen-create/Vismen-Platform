@@ -216,6 +216,21 @@ app.get('/get-mentee-data', async (req, res) => {
 });
 
 
+const Session = require('./models/Session');
+
+app.get('/get-mentee-sessions', async (req, res) => {
+  const { email } = req.query;
+
+  try {
+    const sessions = await Session.find({ menteeEmail: email });
+    res.json(sessions);
+  } catch (err) {
+    console.error("Error fetching sessions:", err);
+    res.status(500).json({ error: "Failed to retrieve sessions" });
+  }
+});
+
+
 // ✅ Start the server
 app.listen(PORT, () => {
   console.log(`✅ Server is running at: http://localhost:${PORT}`);

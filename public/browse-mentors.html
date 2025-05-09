@@ -104,12 +104,12 @@
 
   <script>
     if (!localStorage.getItem("loggedIn")) {
-      window.location.href = "/login.html";
+      window.location.href = "public/login.html";
     }
     const menteeEmail = localStorage.getItem('menteeEmail');
     if (!menteeEmail) {
       alert("Please log in as a mentee to continue.");
-      window.location.href = "/login.html";
+      window.location.href = "public/login.html";
     }
   </script>
   
