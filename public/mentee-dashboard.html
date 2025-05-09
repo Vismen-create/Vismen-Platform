@@ -10,18 +10,15 @@
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
     }
-
     body {
       display: flex;
       flex-direction: column;
     }
-
     .layout {
       display: flex;
       flex: 1;
       min-height: 0;
     }
-
     .sidebar {
       width: 220px;
       background-color: #003366;
@@ -30,33 +27,27 @@
       display: flex;
       flex-direction: column;
     }
-
     .sidebar h2 {
       text-align: center;
       margin-bottom: 30px;
     }
-
     .sidebar ul {
       list-style: none;
       padding: 0;
     }
-
     .sidebar li {
       padding: 15px 20px;
       cursor: pointer;
     }
-
     .sidebar li.active,
     .sidebar li:hover {
       background-color: #004080;
     }
-
     .main-area {
       flex: 1;
       display: flex;
       flex-direction: column;
     }
-
     .navbar {
       background: linear-gradient(to right, #6a11cb, #2575fc);
       padding: 20px 30px;
@@ -65,26 +56,22 @@
       justify-content: space-between;
       align-items: center;
     }
-
     .navbar nav a { 
       margin-left: 20px;
       color: white;
       text-decoration: none;
       font-weight: 500;
     }
-
     .main-content {
       flex: 1;
       padding: 40px;
       background-color: #f4f6fc;
     }
-
     .cards {
       display: flex;
       gap: 20px;
       margin-top: 30px;
     }
-
     .card {
       background-color: white;
       border-radius: 10px;
@@ -92,12 +79,10 @@
       flex: 1;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-
     .card h3 {
       margin-top: 0;
       font-size: 18px;
     }
-
     .btn-orange {
       background-color: #ff6a00;
       color: white;
@@ -108,7 +93,6 @@
       cursor: pointer;
       margin-top: 10px;
     }
-
     footer {
       text-align: center;
       color: white;
@@ -145,7 +129,7 @@
       </div>
 
       <div class="main-content">
-        <h2 id="welcome">Welcome 👋</h2>
+        <h2 id="welcome"></h2>
         <div class="cards">
           <div class="card">
             <h3>Total Sessions Booked</h3>
@@ -170,7 +154,9 @@
   </footer>
 
   <script>
+    const BASE_URL = "https://api.vismen.com"; // 🔁 Change to your actual backend domain
     const menteeEmail = localStorage.getItem('menteeEmail');
+
     if (!menteeEmail) {
       alert("Please log in as a mentee to continue.");
       window.location.href = "/login.html";
@@ -178,30 +164,34 @@
 
     async function loadMenteeData() {
       try {
-        const res = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
+        // Get mentee info
+        const res = await fetch(`${BASE_URL}/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
         const mentee = await res.json();
 
         if (mentee.fullname) {
           document.getElementById("welcome").innerHTML = `Welcome, <strong>${mentee.fullname}</strong> 👋`;
+        } else {
+          document.getElementById("welcome").textContent = "Welcome 👋";
         }
 
-        // Fetch session data
-        const sessionRes = await fetch(`/api/sessions?email=${encodeURIComponent(menteeEmail)}`);
+        // Get session info
+        const sessionRes = await fetch(`${BASE_URL}/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
         const sessions = await sessionRes.json();
 
-        document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
+        if (Array.isArray(sessions) && sessions.length > 0) {
+          document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
 
-        if (sessions.length > 0) {
           const upcoming = sessions[0];
-          document.getElementById("upcomingDate").textContent = upcoming.date;
+          document.getElementById("upcomingDate").textContent = `${upcoming.date} at ${upcoming.time}`;
           document.getElementById("mentorInfo").textContent = `with ${upcoming.mentorName}`;
         } else {
+          document.getElementById("sessionCount").textContent = "0 Sessions";
           document.getElementById("upcomingDate").textContent = "No upcoming sessions";
           document.getElementById("mentorInfo").textContent = "";
         }
 
       } catch (err) {
-        console.error("❌ Error loading dashboard:", err);
+        console.error("❌ Error fetching dashboard data:", err);
         alert("Failed to load dashboard data.");
       }
     }
@@ -214,6 +204,5 @@
 
     loadMenteeData();
   </script>
-
 </body>
 </html>
