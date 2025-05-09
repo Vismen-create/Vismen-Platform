@@ -140,11 +140,12 @@
           <a href="browse-mentors.html">Browse All Mentors</a>
           <a href="#">Membership</a>
           <a href="MentorSignup.html">Become a Mentor</a>
+          <a href="#" onclick="logout()">Logout</a>
         </nav>
       </div>
 
       <div class="main-content">
-        <h2 id="welcome">Welcome, <span id="menteeName"></span> 👋</h2>
+        <h2 id="welcome">Welcome 👋</h2>
         <div class="cards">
           <div class="card">
             <h3>Total Sessions Booked</h3>
@@ -171,48 +172,48 @@
   <script>
     const menteeEmail = localStorage.getItem('menteeEmail');
     if (!menteeEmail) {
-      alert("Please log in to continue.");
+      alert("Please log in as a mentee to continue.");
       window.location.href = "/login.html";
     }
 
     async function loadMenteeData() {
-  const menteeEmail = localStorage.getItem("menteeEmail");
-  if (!menteeEmail) {
-    alert("Please log in to continue.");
-    window.location.href = "/login.html";
-    return;
-  }
+      try {
+        const res = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
+        const mentee = await res.json();
 
-  try {
-    // Fetch mentee name
-    const res1 = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
-    const mentee = await res1.json();
-    if (mentee.fullname) {
-  document.getElementById("menteeName").textContent = mentee.fullname;
-}
+        if (mentee.fullname) {
+          document.getElementById("welcome").innerHTML = `Welcome, <strong>${mentee.fullname}</strong> 👋`;
+        }
 
+        // Fetch session data
+        const sessionRes = await fetch(`/api/sessions?email=${encodeURIComponent(menteeEmail)}`);
+        const sessions = await sessionRes.json();
 
-    // Fetch sessions
-    const res2 = await fetch(`/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
-    const sessions = await res2.json();
+        document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
 
-    document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
+        if (sessions.length > 0) {
+          const upcoming = sessions[0];
+          document.getElementById("upcomingDate").textContent = upcoming.date;
+          document.getElementById("mentorInfo").textContent = `with ${upcoming.mentorName}`;
+        } else {
+          document.getElementById("upcomingDate").textContent = "No upcoming sessions";
+          document.getElementById("mentorInfo").textContent = "";
+        }
 
-    if (sessions.length > 0) {
-      const upcoming = sessions[0];
-      document.getElementById("upcomingDate").textContent = `${upcoming.date} - ${upcoming.time}`;
-      document.getElementById("mentorInfo").textContent = `with ${upcoming.mentorName} (${upcoming.mentorTech})`;
-    } else {
-      document.getElementById("upcomingDate").textContent = "No upcoming session";
-      document.getElementById("mentorInfo").textContent = "";
+      } catch (err) {
+        console.error("❌ Error loading dashboard:", err);
+        alert("Failed to load dashboard data.");
+      }
     }
 
-  } catch (err) {
-    console.error("❌ Error loading mentee dashboard data:", err);
-    alert("Failed to load dashboard data.");
-  }
-}
-</script>
+    function logout() {
+      localStorage.removeItem('menteeEmail');
+      localStorage.removeItem('loggedIn');
+      window.location.href = '/login.html';
+    }
+
+    loadMenteeData();
+  </script>
 
 </body>
 </html>

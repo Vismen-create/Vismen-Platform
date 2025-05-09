@@ -156,16 +156,18 @@
         <button>Card</button>
       </div>
 
-      <button class="confirm-btn">Confirm & Book Session</button>
+      <button class="confirm-btn" onclick="bookSession()">Confirm & Book Session</button>
     </div>
 
-    <div class="right mentor-card">
-      <img src="/Mentor1.jpg" alt="Mentor" />
-      <h3 id="mentorNameRight">Mentor</h3>
-      <p><strong>Full Stack Mentor</strong></p>
-      <p>Helped 500+ students crack interviews</p>
-      <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
-    </div>
+   <!-- Replace in your mentor-card -->
+<div class="right mentor-card">
+  <img id="mentorImage" src="/Mentor1.jpg" alt="Mentor" />
+  <h3 id="mentorNameRight">Mentor</h3>
+  <p><strong id="mentorTitle">Full Stack Mentor</strong></p>
+  <p id="mentorCompany">Company</p>
+  <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐</p>
+</div>
+
   </div>
 
   <div class="footer">
@@ -173,14 +175,32 @@
   </div>
 
   <script>
-    // Set mentor name from URL param if passed
     const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get('email');
-    const mentorName = email?.split('@')[0] || "Mentor";
-    document.getElementById('mentorName').textContent = mentorName;
-    document.getElementById('mentorNameRight').textContent = mentorName;
+    const mentorEmail = urlParams.get('email');
+  
+    async function loadMentorDetails() {
+      try {
+        const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
+        const mentor = await res.json();
+  
+        if (mentor) {
+          document.getElementById("mentorName").textContent = mentor.name;
+          document.getElementById("mentorNameRight").textContent = mentor.name;
+          document.getElementById("mentorTitle").textContent = mentor.title;
+          document.getElementById("mentorCompany").textContent = mentor.company;
+          document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
+        } else {
+          alert("Mentor not found");
+        }
+      } catch (err) {
+        console.error("Failed to fetch mentor details:", err);
+        alert("Error loading mentor details.");
+      }
+    }
+  
+    loadMentorDetails();
   </script>
-
+  
 <script>
     const menteeEmail = localStorage.getItem('menteeEmail');
     if (!menteeEmail) {
@@ -189,5 +209,46 @@
     }
   </script>
   
+
+
+
+
+  <script>
+    async function bookSession() {
+      const menteeEmail = localStorage.getItem("menteeEmail");
+      const urlParams = new URLSearchParams(window.location.search);
+      const mentorEmail = urlParams.get("email");
+    
+      const date = document.querySelector(".time-slots button.active")?.textContent;
+      const topic = document.querySelector(".session-type button.active")?.textContent;
+      const time = date?.split("-")[1]?.trim(); // assuming format "Thu 25 - 7:00 PM"
+    
+      if (!menteeEmail || !mentorEmail || !date || !topic) {
+        alert("Please select all required fields.");
+        return;
+      }
+    
+      const res = await fetch('/book-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          menteeEmail,
+          mentorName: document.getElementById("mentorName").textContent,
+          date: date.split("-")[0].trim(),
+          time,
+          topic
+        })
+      });
+    
+      const result = await res.json();
+      if (result.success) {
+        alert("Session booked!");
+        window.location.href = "mentee-dashboard.html";
+      } else {
+        alert("Booking failed.");
+      }
+    }
+    </script>
+    
 </body>
 </html>

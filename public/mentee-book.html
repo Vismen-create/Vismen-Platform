@@ -163,8 +163,8 @@
         <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
         <li class="active">Book Sessions</li>
         <li onclick="location.href='mentee-sessions.html'">My Sessions</li>
-      <li>Messages</li>
-      <li>Profile</li>
+        <li>Messages</li>
+        <li>Profile</li>
     </ul>
   </div>
 
@@ -172,9 +172,9 @@
     <div class="navbar">
       <h1>Mentee Panel</h1>
       <nav>
-        <a href="#">Browse All Mentors</a>
+        <a href="browse-mentors.html">Browse All Mentors</a>
         <a href="#">Membership</a>
-        <a href="#">Become a Mentor</a>
+        <a href="MentorSignup.html">Become a Mentor</a>
       </nav>
     </div>
 
@@ -185,22 +185,7 @@
       </div>
 
       <div class="mentor-grid" id="mentorGrid">
-          <img src="https://randomuser.me/api/portraits/women/75.jpg" alt="Raj">
-          <h3>Raj - React Expert</h3>
-          <p>Senior Developer at Google</p>
-          <div class="tags">
-            <span>React</span><span>JavaScript</span><span>UI</span>
-          </div>
-          <button class="book-btn">Book Session →</button>
-        </div>
-
-          <h3>Divya - QA Mentor</h3>
-          <p>QA Lead at Amazon</p>
-          <div class="tags">
-            <span>Selenium</span><span>Playwright</span><span>JIRA</span>
-          </div>
-          <button class="book-btn">Book Session →</button>
-        </div>
+        <!-- Dynamic mentor cards will appear here -->
       </div>
     </div>
 
@@ -219,39 +204,39 @@
         card.style.display = name.includes(input) ? "block" : "none";
       });
     }
+
+    async function loadMentors() {
+      const res = await fetch('/api/mentors');
+      const mentors = await res.json();
+      const grid = document.getElementById("mentorGrid");
+
+      grid.innerHTML = ""; // Clear existing static content
+
+      mentors.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "mentor-card";
+        card.setAttribute("data-name", `${m.name} ${m.title} ${m.company}`.toLowerCase());
+
+        card.innerHTML = `
+          <img src="${m.image || 'https://randomuser.me/api/portraits/lego/1.jpg'}" alt="${m.name}">
+          <h3>${m.name} - ${m.title}</h3>
+          <p>${m.company}</p>
+          <div class="tags">
+            ${m.tags.map(tag => `<span>${tag}</span>`).join("")}
+          </div>
+          <button class="book-btn">Book Session →</button>
+        `;
+
+        card.querySelector(".book-btn").onclick = () => {
+          window.location.href = `book-session.html?email=${encodeURIComponent(m.email)}`;
+        };
+
+        grid.appendChild(card);
+      });
+    }
+
+    window.onload = loadMentors;
   </script>
-
-
-
-<script>
-  async function loadMentors() {
-    const res = await fetch('/api/mentors');
-    const mentors = await res.json();
-    const grid = document.getElementById("mentorGrid");
-
-    grid.innerHTML = ""; // Clear existing static content
-
-    mentors.forEach(m => {
-      const card = document.createElement("div");
-      card.className = "mentor-card";
-      card.setAttribute("data-name", `${m.name} ${m.title} ${m.company}`.toLowerCase());
-
-      card.innerHTML = `
-        <img src="${m.image || 'https://randomuser.me/api/portraits/lego/1.jpg'}" alt="${m.name}">
-        <h3>${m.name} - ${m.title}</h3>
-        <p>${m.company}</p>
-        <div class="tags">
-          ${m.tags.map(tag => `<span>${tag}</span>`).join("")}
-        </div>
-        <button class="book-btn" onclick="alert('Booked session with ${m.name}')">Book Session →</button>
-      `;
-
-      grid.appendChild(card);
-    });
-  }
-
-  window.onload = loadMentors;
-</script>
 
 </body>
 </html>

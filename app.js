@@ -1,7 +1,5 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-
-
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -11,17 +9,16 @@ const PORT = 3000;
 
 const mentorsFile = path.join(__dirname, 'data', 'mentors.json');
 const menteesFile = path.join(__dirname, 'data', 'mentees.json');
-const Mentee = require('./models/Mentee'); // 
 
+const Mentor = require('./models/Mentor');
+const Mentee = require('./models/Mentee');
+const Session = require('./models/Session');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-
 console.log("Connecting to MongoDB with URI:", process.env.MONGO_URI);
-
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -32,14 +29,8 @@ mongoose.connect(process.env.MONGO_URI, {
   console.error("❌ MongoDB connection error:", err);
 });
 
-
-
-  const Mentor = require('./models/Mentor'); // 👈 Import the model
-
 // ✅ Save mentor to MongoDB
 app.post("/api/mentors", async (req, res) => {
-  const { name, title, company, tags, image } = req.body;
-
   try {
     const { name, title, company, tags, image, email, password } = req.body;
 
@@ -61,19 +52,25 @@ app.post("/api/mentors", async (req, res) => {
   }
 });
 
-
 app.get("/api/mentors", async (req, res) => {
   try {
     const mentors = await Mentor.find();
-    res.json(mentors);
+    const formatted = mentors.map(m => ({
+      name: m.name,
+      title: m.title,
+      company: m.company,
+      tags: m.tags,
+      image: m.image,
+      email: m.email
+    }));
+    res.json(formatted);
   } catch (err) {
+    console.error("❌ Error loading mentors from DB:", err);
     res.status(500).json({ error: "Failed to load mentors." });
   }
 });
 
-
-
-// ✅ Mentor Signup
+// ✅ Mentor Signup (legacy JSON file)
 app.post('/mentor-signup', (req, res) => {
   const newMentor = req.body;
 
@@ -93,7 +90,6 @@ app.post('/mentor-signup', (req, res) => {
   });
 });
 
-
 // ✅ Mentee Signup
 app.post('/mentee-signup', async (req, res) => {
   const { fullname, email, mobile, password } = req.body;
@@ -110,21 +106,17 @@ app.post('/mentee-signup', async (req, res) => {
       mobile,
       password: password.trim()
     });
-    
-    await newMentee.save();
 
+    await newMentee.save();
     console.log("✅ Mentee saved:", newMentee);
     res.send(`<script>alert("Signup successful! Please login."); window.location.href = "/login.html";</script>`);
   } catch (err) {
     console.error("❌ Error saving mentee:", err.message);
     res.status(500).send("Server error while saving mentee: " + err.message);
   }
-  
 });
 
-
 // ✅ Login
-// ✅ Login using MongoDB for Mentors
 app.post('/login', async (req, res) => {
   let { email, password, role } = req.body;
   email = email.trim().toLowerCase();
@@ -134,19 +126,11 @@ app.post('/login', async (req, res) => {
     if (role.toLowerCase() === 'mentor') {
       const mentor = await Mentor.findOne({ email, password });
       console.log("🧠 Mentor Login Attempt:", mentor);
-      if (mentor) {
-        return res.json({ success: true, email });
-      } else {
-        return res.json({ success: false });
-      }
+      return res.json({ success: !!mentor, email });
     } else if (role.toLowerCase() === 'mentee') {
       const mentee = await Mentee.findOne({ email, password });
       console.log("🧠 Mentee Login Attempt:", mentee);
-      if (mentee) {
-        return res.json({ success: true, email });
-      } else {
-        return res.json({ success: false });
-      }
+      return res.json({ success: !!mentee, email });
     } else {
       return res.status(400).json({ error: "Invalid role" });
     }
@@ -156,17 +140,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Get Mentor Data by Email (from MongoDB)
+// ✅ Get Mentor by Email
 app.get('/get-mentor-data', async (req, res) => {
-  const email = req.query.email;
-
   try {
-    const mentor = await Mentor.findOne({ email });
-
-    if (!mentor) {
-      return res.status(404).json({ error: 'Mentor not found' });
-    }
-
+    const mentor = await Mentor.findOne({ email: req.query.email });
+    if (!mentor) return res.status(404).json({ error: 'Mentor not found' });
     res.json(mentor);
   } catch (err) {
     console.error("❌ Error fetching mentor:", err);
@@ -174,40 +152,11 @@ app.get('/get-mentor-data', async (req, res) => {
   }
 });
 
-
-// ✅ Get All Mentors from MongoDB
-app.get("/api/mentors", async (req, res) => {
-  try {
-    const mentors = await Mentor.find();
-
-    const formatted = mentors.map(m => ({
-      name: m.name,
-      title: m.title,
-      company: m.company,
-      tags: m.tags,
-      image: m.image,
-      email: m.email
-    }));
-
-    res.json(formatted);
-  } catch (err) {
-    console.error("❌ Error loading mentors from DB:", err);
-    res.status(500).json({ error: "Failed to load mentors." });
-  }
-});
-
-
-// ✅ Get Mentee Data by Email (for dashboard)
+// ✅ Get Mentee by Email
 app.get('/get-mentee-data', async (req, res) => {
-  const email = req.query.email;
-
   try {
-    const mentee = await Mentee.findOne({ email });
-
-    if (!mentee) {
-      return res.status(404).json({ error: 'Mentee not found' });
-    }
-
+    const mentee = await Mentee.findOne({ email: req.query.email });
+    if (!mentee) return res.status(404).json({ error: 'Mentee not found' });
     res.json(mentee);
   } catch (err) {
     console.error("❌ Error fetching mentee:", err);
@@ -215,23 +164,30 @@ app.get('/get-mentee-data', async (req, res) => {
   }
 });
 
-
-const Session = require('./models/Session');
-
-app.get('/get-mentee-sessions', async (req, res) => {
-  const { email } = req.query;
-
+// ✅ Book Session
+app.post('/book-session', async (req, res) => {
   try {
-    const sessions = await Session.find({ menteeEmail: email });
-    res.json(sessions);
+    const session = new Session(req.body);
+    await session.save();
+    res.json({ success: true });
   } catch (err) {
-    console.error("Error fetching sessions:", err);
-    res.status(500).json({ error: "Failed to retrieve sessions" });
+    console.error("❌ Booking Error:", err);
+    res.status(500).json({ success: false, error: 'Booking failed' });
   }
 });
 
+// ✅ Get Sessions by Mentee Email
+app.get('/get-mentee-sessions', async (req, res) => {
+  try {
+    const sessions = await Session.find({ menteeEmail: req.query.email });
+    res.json(sessions);
+  } catch (err) {
+    console.error("❌ Error fetching sessions:", err);
+    res.status(500).json({ error: 'Failed to retrieve sessions' });
+  }
+});
 
-// ✅ Start the server
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`✅ Server is running at: http://localhost:${PORT}`);
 });
