@@ -187,6 +187,14 @@ app.get('/get-mentee-sessions', async (req, res) => {
   }
 });
 
+
+const cors = require("cors");
+app.use(cors({
+  origin: "https://www.vismen.com", // ✅ match frontend domain
+  credentials: true
+}));
+
+
 // ✅ Start server
 app.listen(PORT, () => {
   console.log(`✅ Server is running at: http://localhost:${PORT}`);
