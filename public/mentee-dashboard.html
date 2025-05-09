@@ -144,7 +144,7 @@
       </div>
 
       <div class="main-content">
-        <h2 id="welcome">Welcome 👋</h2>
+        <h2 id="welcome">Welcome, <span id="menteeName"></span> 👋</h2>
         <div class="cards">
           <div class="card">
             <h3>Total Sessions Booked</h3>
@@ -188,8 +188,9 @@
     const res1 = await fetch(`/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
     const mentee = await res1.json();
     if (mentee.fullname) {
-      document.getElementById("welcome").textContent = `Welcome, ${mentee.fullname} 👋`;
-    }
+  document.getElementById("menteeName").textContent = mentee.fullname;
+}
+
 
     // Fetch sessions
     const res2 = await fetch(`/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
