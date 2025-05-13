@@ -188,11 +188,12 @@ app.get('/get-mentee-sessions', async (req, res) => {
 });
 
 
-const cors = require("cors");
+const cors = require('cors');
 app.use(cors({
-  origin: "https://www.vismen.com", // ✅ match frontend domain
+  origin: ['https://www.vismen.com'], // include the www domain
   credentials: true
 }));
+
 
 
 // ✅ Start server

@@ -164,14 +164,14 @@
   async function loadMenteeData() {
     try {
       // ✅ Fixed BASE URL
-      const res = await fetch(`https://vismen.com/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
+      const res = await fetch(`https://www.vismen.com/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
       const mentee = await res.json();
 
       if (mentee.fullname) {
         document.getElementById("welcome").innerHTML = `Welcome, <strong>${mentee.fullname}</strong> 👋`;
       }
 
-      const sessionRes = await fetch(`https://vismen.com/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
+      const sessionRes = await fetch(`https://www.vismen.com/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
       const sessions = await sessionRes.json();
 
       if (Array.isArray(sessions) && sessions.length > 0) {
