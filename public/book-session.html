@@ -4,13 +4,118 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book Mentor Session</title>
-  <link rel="stylesheet" href="/styles.css" />
   <style>
-    /* ... same CSS as before ... */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6fc;
+      color: #1e293b;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    .booking-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 30px;
+    }
+
+    .left, .right {
+      flex: 1;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 15px;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .time-slots button,
+    .session-type button,
+    .payment-options button {
+      margin: 8px 5px;
+      padding: 10px 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
+    }
+
     .active {
       background-color: #3b82f6;
       color: white;
       border-color: #3b82f6;
+    }
+
+    .confirm-btn {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #f97316;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .confirm-btn:hover {
+      background-color: #ea580c;
+    }
+
+    .mentor-card {
+      background-color: #f9fafb;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .mentor-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .footer {
+      background-color: #0f172a;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 60px;
     }
   </style>
 </head>
@@ -73,7 +178,6 @@
   </div>
 
   <script>
-    // Button toggle logic
     function setupToggle(selector) {
       document.querySelectorAll(selector).forEach(button => {
         button.addEventListener('click', () => {
@@ -83,9 +187,11 @@
       });
     }
 
-    setupToggle('.time-slots button');
-    setupToggle('.session-type button');
-    setupToggle('.payment-options button');
+    window.addEventListener('DOMContentLoaded', () => {
+      setupToggle('.time-slots button');
+      setupToggle('.session-type button');
+      setupToggle('.payment-options button');
+    });
 
     const menteeEmail = localStorage.getItem('menteeEmail');
     if (!menteeEmail) {
@@ -129,6 +235,8 @@
         alert("Please select all fields.");
         return;
       }
+
+      console.log({ date, topic, payment, time, day, problem });
 
       const res = await fetch('/book-session', {
         method: 'POST',
