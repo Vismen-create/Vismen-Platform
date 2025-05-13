@@ -168,41 +168,43 @@
   </footer>
 
   <script>
-    function filterSessions(status) {
-      const rows = document.querySelectorAll("tbody tr");
-      rows.forEach(row => {
-        row.style.display = row.dataset.status === status ? "table-row" : "none";
-      });
-
-      const buttons = document.querySelectorAll(".tabs button");
-      buttons.forEach(btn => btn.classList.remove("active"));
-      document.querySelector(`.tabs button[onclick*="${status}"]`).classList.add("active");
+  async function loadSessions() {
+    const menteeEmail = localStorage.getItem("menteeEmail");
+    if (!menteeEmail) {
+      alert("Please login to view your sessions.");
+      return;
     }
 
-    async function loadSessions() {
-      const menteeEmail = localStorage.getItem('menteeEmail');
-      if (!menteeEmail) return;
+    try {
       const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
       const sessions = await res.json();
-      const tbody = document.getElementById("sessionsTableBody");
+
+      const tbody = document.querySelector("tbody");
       tbody.innerHTML = "";
 
-      sessions.forEach(s => {
-        const tr = document.createElement("tr");
-        tr.setAttribute("data-status", s.status.toLowerCase());
-        tr.innerHTML = `
-          <td>${s.date}, ${s.time}</td>
-          <td>${s.mentorName}</td>
-          <td>${s.topic}</td>
-          <td><span class="status ${s.status.toLowerCase()}">${s.status}</span></td>
+      sessions.forEach(session => {
+        const row = document.createElement("tr");
+        row.setAttribute("data-status", "upcoming"); // You can set dynamic status here
+
+        row.innerHTML = `
+          <td>${session.date}, ${session.time}</td>
+          <td>${session.mentorName}</td>
+          <td>${session.topic}</td>
+          <td><span class="status upcoming">Upcoming</span></td>
         `;
-        tbody.appendChild(tr);
+
+        tbody.appendChild(row);
       });
-
-      filterSessions('upcoming');
+    } catch (err) {
+      console.error("❌ Failed to load sessions:", err);
     }
+  }
 
-    window.onload = loadSessions;
-  </script>
+  window.onload = () => {
+    filterSessions('upcoming');  // From your existing tabs script
+    loadSessions();
+  };
+</script>
+
 </body>
 </html>
