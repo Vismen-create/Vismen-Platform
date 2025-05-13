@@ -157,26 +157,7 @@
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>
-            <tr data-status="upcoming">
-              <td>May 8, 6:00 PM</td>
-              <td>Raj (React Expert)</td>
-              <td>UI Debugging</td>
-              <td><span class="status upcoming">Upcoming</span></td>
-            </tr>
-            <tr data-status="completed">
-              <td>Apr 22, 7:30 PM</td>
-              <td>Divya (QA Mentor)</td>
-              <td>Playwright Automation</td>
-              <td><span class="status completed">Completed</span></td>
-            </tr>
-            <tr data-status="canceled">
-              <td>Apr 15, 5:00 PM</td>
-              <td>Ravi (DevOps Mentor)</td>
-              <td>CI/CD Basics</td>
-              <td><span class="status canceled">Canceled</span></td>
-            </tr>
-          </tbody>
+          <tbody id="sessionsTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -198,8 +179,30 @@
       document.querySelector(`.tabs button[onclick*="${status}"]`).classList.add("active");
     }
 
-    // Default: show only upcoming sessions
-    window.onload = () => filterSessions('upcoming');
+    async function loadSessions() {
+      const menteeEmail = localStorage.getItem('menteeEmail');
+      if (!menteeEmail) return;
+      const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
+      const sessions = await res.json();
+      const tbody = document.getElementById("sessionsTableBody");
+      tbody.innerHTML = "";
+
+      sessions.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-status", s.status.toLowerCase());
+        tr.innerHTML = `
+          <td>${s.date}, ${s.time}</td>
+          <td>${s.mentorName}</td>
+          <td>${s.topic}</td>
+          <td><span class="status ${s.status.toLowerCase()}">${s.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      filterSessions('upcoming');
+    }
+
+    window.onload = loadSessions;
   </script>
 </body>
 </html>
