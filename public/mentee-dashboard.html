@@ -154,55 +154,52 @@
   </footer>
 
   <script>
-const BASE_URL = "https://www.vismen.com";
-const menteeEmail = localStorage.getItem('menteeEmail');
+  const menteeEmail = localStorage.getItem('menteeEmail');
 
-    if (!menteeEmail) {
-      alert("Please log in as a mentee to continue.");
-      window.location.href = "/login.html";
-    }
+  if (!menteeEmail) {
+    alert("Please log in as a mentee to continue.");
+    window.location.href = "/login.html";
+  }
 
-    async function loadMenteeData() {
-      try {
-        // Get mentee info
-        const res = await fetch(`${BASE_URL}/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
-        const mentee = await res.json();
+  async function loadMenteeData() {
+    try {
+      // ✅ Fixed BASE URL
+      const res = await fetch(`https://vismen.com/get-mentee-data?email=${encodeURIComponent(menteeEmail)}`);
+      const mentee = await res.json();
 
-        if (mentee.fullname) {
-          document.getElementById("welcome").innerHTML = `Welcome, <strong>${mentee.fullname}</strong> 👋`;
-        } else {
-          document.getElementById("welcome").textContent = "Welcome 👋";
-        }
-
-        // Get session info
-        const sessionRes = await fetch(`${BASE_URL}/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
-        const sessions = await sessionRes.json();
-
-        if (Array.isArray(sessions) && sessions.length > 0) {
-          document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
-
-          const upcoming = sessions[0];
-          document.getElementById("upcomingDate").textContent = `${upcoming.date} at ${upcoming.time}`;
-          document.getElementById("mentorInfo").textContent = `with ${upcoming.mentorName}`;
-        } else {
-          document.getElementById("sessionCount").textContent = "0 Sessions";
-          document.getElementById("upcomingDate").textContent = "No upcoming sessions";
-          document.getElementById("mentorInfo").textContent = "";
-        }
-
-      } catch (err) {
-        console.error("❌ Error fetching dashboard data:", err);
-        alert("Failed to load dashboard data.");
+      if (mentee.fullname) {
+        document.getElementById("welcome").innerHTML = `Welcome, <strong>${mentee.fullname}</strong> 👋`;
       }
-    }
 
-    function logout() {
-      localStorage.removeItem('menteeEmail');
-      localStorage.removeItem('loggedIn');
-      window.location.href = '/login.html';
-    }
+      const sessionRes = await fetch(`https://vismen.com/get-mentee-sessions?email=${encodeURIComponent(menteeEmail)}`);
+      const sessions = await sessionRes.json();
 
-    loadMenteeData();
-  </script>
+      if (Array.isArray(sessions) && sessions.length > 0) {
+        document.getElementById("sessionCount").textContent = `${sessions.length} Sessions`;
+
+        const upcoming = sessions[0];
+        document.getElementById("upcomingDate").textContent = `${upcoming.date} at ${upcoming.time}`;
+        document.getElementById("mentorInfo").textContent = `with ${upcoming.mentorName}`;
+      } else {
+        document.getElementById("sessionCount").textContent = "0 Sessions";
+        document.getElementById("upcomingDate").textContent = "No upcoming sessions";
+        document.getElementById("mentorInfo").textContent = "";
+      }
+
+    } catch (err) {
+      console.error("❌ Dashboard load error:", err);
+      alert("Failed to load dashboard data.");
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('menteeEmail');
+    localStorage.removeItem('loggedIn');
+    window.location.href = '/login.html';
+  }
+
+  loadMenteeData();
+</script>
+
 </body>
 </html>
