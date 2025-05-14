@@ -1012,10 +1012,8 @@
       <a href="#">Membership</a>
       <a href="#">Become a Mentor</a>
     </nav>
-    <div>
-      <button class="btn btn-outline" onclick="openRoleModal()">Sign Up</button>
-      <a href="login.html" class="btn btn-orange" style="text-decoration: none;">Log In</a>
-    </div>
+    <div id="authSection"></div>
+
   </header>
 
   <section class="hero">
@@ -1382,30 +1380,38 @@
     }
   }
 </script>
-
- <script>
+<script>
+  window.onload = function () {
     const menteeEmail = localStorage.getItem("menteeEmail");
     const menteeName = localStorage.getItem("menteeName");
 
     if (menteeEmail) {
       const nav = document.getElementById("mainNav");
-      nav.innerHTML = `
-        <a href="mentee-dashboard.html">Dashboard</a>
-        <a href="mentee-profile.html">My Profile</a>
-        <a href="#" onclick="logout()">Logout</a>
-      `;
+      if (nav) {
+        nav.innerHTML = `
+          <a href="mentee-dashboard.html">Dashboard</a>
+          <a href="mentee-profile.html">My Profile</a>
+          <a href="#" onclick="logout()">Logout</a>
+        `;
+      }
 
       const authDiv = document.getElementById("authButtons");
-      authDiv.innerHTML = `<span style="font-weight: 600; margin-right: 10px; color: white;">Hi, ${menteeName || "Mentee"}</span>
-        <button onclick="logout()" class="btn btn-outline">Logout</button>`;
+      if (authDiv) {
+        authDiv.innerHTML = `
+          <span style="font-weight: 600; margin-right: 10px; color: white;">Hi, ${menteeName || "Mentee"}</span>
+          <button onclick="logout()" class="btn btn-outline">Logout</button>
+        `;
+      }
     }
+  };
 
-    function logout() {
-      localStorage.removeItem("menteeEmail");
-      localStorage.removeItem("menteeName");
-      window.location.href = "index.html";
-    }
-  </script>
+  function logout() {
+    localStorage.removeItem("menteeEmail");
+    localStorage.removeItem("menteeName");
+    window.location.href = "index.html";
+  }
+</script>
+
 
 </body>
 </html>
