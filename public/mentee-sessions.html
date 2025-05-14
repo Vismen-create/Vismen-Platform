@@ -105,10 +105,6 @@
     .status.completed { color: #2e7d32; background-color: #e8f5e9; }
     .status.canceled { color: #c62828; background-color: #ffebee; }
 
-    tr[data-status] {
-      display: table-row;
-    }
-
     footer {
       text-align: center;
       color: white;
@@ -168,43 +164,52 @@
   </footer>
 
   <script>
-  async function loadSessions() {
-    const menteeEmail = localStorage.getItem("menteeEmail");
-    if (!menteeEmail) {
-      alert("Please login to view your sessions.");
-      return;
-    }
-
-    try {
-      const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
-      const sessions = await res.json();
-
-      const tbody = document.querySelector("tbody");
-      tbody.innerHTML = "";
-
-      sessions.forEach(session => {
-        const row = document.createElement("tr");
-        row.setAttribute("data-status", "upcoming"); // You can set dynamic status here
-
-        row.innerHTML = `
-          <td>${session.date}, ${session.time}</td>
-          <td>${session.mentorName}</td>
-          <td>${session.topic}</td>
-          <td><span class="status upcoming">Upcoming</span></td>
-        `;
-
-        tbody.appendChild(row);
+    function filterSessions(status) {
+      const rows = document.querySelectorAll("tbody tr");
+      rows.forEach(row => {
+        row.style.display = row.dataset.status === status ? "table-row" : "none";
       });
-    } catch (err) {
-      console.error("❌ Failed to load sessions:", err);
+
+      const buttons = document.querySelectorAll(".tabs button");
+      buttons.forEach(btn => btn.classList.remove("active"));
+      document.querySelector(`.tabs button[onclick*="${status}"]`).classList.add("active");
     }
-  }
 
-  window.onload = () => {
-    filterSessions('upcoming');  // From your existing tabs script
-    loadSessions();
-  };
-</script>
+    async function loadSessions() {
+      const menteeEmail = localStorage.getItem("menteeEmail");
+      if (!menteeEmail) {
+        alert("Please login to view your sessions.");
+        return;
+      }
 
+      try {
+        const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
+        const sessions = await res.json();
+
+        const tbody = document.querySelector("#sessionsTableBody");
+        tbody.innerHTML = "";
+
+        sessions.forEach(session => {
+          const status = "upcoming"; // You can make this dynamic later
+          const row = document.createElement("tr");
+          row.setAttribute("data-status", status);
+
+          row.innerHTML = `
+            <td>${session.date}, ${session.time}</td>
+            <td>${session.mentorName}</td>
+            <td>${session.topic}</td>
+            <td><span class="status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        filterSessions('upcoming'); // reapply filtering after load
+      } catch (err) {
+        console.error("❌ Failed to load sessions:", err);
+      }
+    }
+
+    window.onload = loadSessions;
+  </script>
 </body>
 </html>
