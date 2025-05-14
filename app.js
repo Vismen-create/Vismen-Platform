@@ -153,12 +153,29 @@ app.get('/get-mentor-data', async (req, res) => {
   try {
     const mentor = await Mentor.findOne({ email: req.query.email });
     if (!mentor) return res.status(404).json({ error: 'Mentor not found' });
-    res.json(mentor);
+
+    const sessions = await Session.find({ mentorName: mentor.name });
+
+    // Calculate metrics
+    const totalSessions = sessions.length;
+    const totalEarnings = totalSessions * 800; // example ₹800 per session
+    const averageRating = 4.8; // hardcoded or calculated from review model (if available)
+
+    res.json({
+      fullname: mentor.name,
+      interests: mentor.title || '-',
+      experience: mentor.company || '-',
+      goals: mentor.tags.join(', ') || '-',
+      sessions: totalSessions,
+      earnings: totalEarnings,
+      rating: averageRating
+    });
   } catch (err) {
     console.error("❌ Error fetching mentor:", err);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // ✅ Get Mentee by Email
 app.get('/get-mentee-data', async (req, res) => {

@@ -141,36 +141,68 @@
 </footer>
 
 <script>
-async function highlightSessionDates() {
-  const mentorName = localStorage.getItem('mentorName');
-  if (!mentorName) return;
+  async function loadMentor() {
+    const email = new URLSearchParams(window.location.search).get('email');
+    if (!email) return;
 
-  try {
-    const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
-    const sessions = await res.json();
+    try {
+      const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(email)}`);
+      const mentor = await res.json();
 
-    if (sessions && Array.isArray(sessions)) {
-      const sessionDates = sessions.map(s => {
-        // Extract the numeric day from "Thu 25"
-        const match = s.date.match(/\d+/); 
-        return match ? match[0].replace(/^0/, '') : null; // Remove leading zero
-      }).filter(Boolean);
+      if (mentor) {
+        document.getElementById('welcome').textContent = `Welcome, ${mentor.fullname || ''} 👋`;
+        document.getElementById('interest').textContent = mentor.interests || '-';
+        document.getElementById('experience').textContent = mentor.experience || '-';
+        document.getElementById('goals').textContent = mentor.goals || '-';
 
-      const allCells = document.querySelectorAll('.calendar td');
-      allCells.forEach(cell => {
-        const day = cell.textContent.trim().replace(/^0/, ''); // Also remove leading zero
-        if (sessionDates.includes(day)) {
-          cell.classList.add('active');
-        }
-      });
+        document.getElementById('sessionCount').textContent = mentor.sessions || '0';
+        document.getElementById('earningAmount').textContent = mentor.earnings ? `₹${mentor.earnings}` : '₹0';
+        document.getElementById('reviewRating').textContent = mentor.rating || '0.0';
+      }
+    } catch (err) {
+      console.error("Failed to load mentor:", err);
     }
-  } catch (err) {
-    console.error("Failed to highlight sessions:", err);
   }
-}
 
-highlightSessionDates();
+  async function highlightSessionDates() {
+    const mentorName = localStorage.getItem('mentorName');
+    if (!mentorName) return;
+
+    try {
+      const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
+      const sessions = await res.json();
+
+      if (sessions && Array.isArray(sessions)) {
+        const sessionDates = sessions.map(s => {
+          const match = s.date.match(/\d+/);
+          return match ? match[0].replace(/^0/, '') : null;
+        }).filter(Boolean);
+
+        const allCells = document.querySelectorAll('.calendar td');
+        allCells.forEach(cell => {
+          const day = cell.textContent.trim().replace(/^0/, '');
+          if (sessionDates.includes(day)) {
+            cell.classList.add('active');
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Failed to highlight sessions:", err);
+    }
+  }
+
+  loadMentor();
+  highlightSessionDates();
 </script>
+
+<script>
+  function logout() {
+    localStorage.removeItem('mentorName');
+    localStorage.removeItem('loggedIn');
+    window.location.href = 'login.html';
+  }
+</script>
+
 
 console.log("✅ Sessions from DB:", sessions);
 
