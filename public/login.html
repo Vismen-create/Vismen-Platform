@@ -251,19 +251,23 @@
     const result = await res.json();
 
     if (result.success) {
-  localStorage.setItem("loggedIn", "true");  // ✅ add this line
-  if (role === 'Mentee') {
-    localStorage.setItem('menteeEmail', email);
-    window.location.href = '/mentee-dashboard.html';
-  } else {
-    window.location.href = `/mentor-dashboard.html?email=${encodeURIComponent(email)}`;
-  }
+      localStorage.setItem("loggedIn", "true");
+
+      if (role === 'Mentee') {
+        localStorage.setItem('menteeEmail', email);
+        localStorage.setItem('menteeName', result.name || "Mentee"); // ✅ Store menteeName
+        window.location.href = '/mentee-dashboard.html';
+      } else {
+        // For mentors, you can later store mentorName similarly if needed
+        window.location.href = `/mentor-dashboard.html?email=${encodeURIComponent(email)}`;
+      }
 
     } else {
       alert('Invalid email or password. Please try again.');
     }
   });
 </script>
+
 
 </body>
 </html>
