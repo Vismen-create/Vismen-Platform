@@ -255,7 +255,7 @@
 
       if (role === 'Mentee') {
         localStorage.setItem('menteeEmail', email);
-        localStorage.setItem('menteeName', result.name || "Mentee"); // ✅ Store menteeName
+localStorage.setItem('menteeName', result.fullname || "Mentee");
         window.location.href = '/mentee-dashboard.html';
       } else {
         // For mentors, you can later store mentorName similarly if needed
