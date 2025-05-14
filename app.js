@@ -126,11 +126,21 @@ app.post('/login', async (req, res) => {
     if (role.toLowerCase() === 'mentor') {
       const mentor = await Mentor.findOne({ email, password });
       console.log("🧠 Mentor Login Attempt:", mentor);
-      return res.json({ success: !!mentor, email });
+
+      return res.json({
+        success: !!mentor,
+        email,
+        name: mentor?.name || ""
+      });
     } else if (role.toLowerCase() === 'mentee') {
       const mentee = await Mentee.findOne({ email, password });
       console.log("🧠 Mentee Login Attempt:", mentee);
-      return res.json({ success: !!mentee, email });
+
+      return res.json({
+        success: !!mentee,
+        email,
+        name: mentee?.name || ""
+      });
     } else {
       return res.status(400).json({ error: "Invalid role" });
     }
