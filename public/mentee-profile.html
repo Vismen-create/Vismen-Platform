@@ -179,15 +179,15 @@
       <div class="profile-container">
         <div class="section">
           <div class="section-title">Personal Information</div>
-          <div class="info-row"><span class="info-label">Full Name:</span><span class="info-value">Anjali Sharma</span></div>
-          <div class="info-row"><span class="info-label">Email:</span><span class="info-value">anjali@example.com</span></div>
-          <div class="info-row"><span class="info-label">Phone:</span><span class="info-value">+91-9876543210</span></div>
-          <div class="info-row"><span class="info-label">Preferred Language:</span><span class="info-value">English</span></div>
+          <div class="info-row"><span class="info-label">Full Name:</span><span class="info-value" id="fullName">Loading...</span></div>
+          <div class="info-row"><span class="info-label">Email:</span><span class="info-value" id="email">Loading...</span></div>
+          <div class="info-row"><span class="info-label">Phone:</span><span class="info-value" id="phone">Loading...</span></div>
+          <div class="info-row"><span class="info-label">Preferred Language:</span><span class="info-value" id="language">Loading...</span></div>
         </div>
 
         <div class="section">
           <div class="section-title">Learning Interests</div>
-          <div class="info-value">React, API Automation, Interview Preparation</div>
+          <div class="info-value" id="interests">Loading...</div>
         </div>
 
         <div class="section">
@@ -214,6 +214,28 @@
 <footer>
   © 2025 VisMen IT Solutions. All rights reserved.
 </footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const menteeEmail = localStorage.getItem("menteeEmail");
+    if (!menteeEmail) return;
+
+    try {
+      const res = await fetch(`https://www.vismen.com/get-mentee-data?email=${menteeEmail}`);
+      const mentee = await res.json();
+
+      if (mentee) {
+        document.getElementById("fullName").innerText = mentee.fullname || "-";
+        document.getElementById("email").innerText = mentee.email || "-";
+        document.getElementById("phone").innerText = mentee.mobile || "-";
+        document.getElementById("language").innerText = mentee.language || "-";
+        document.getElementById("interests").innerText = mentee.interests || "-";
+      }
+    } catch (err) {
+      console.error("Failed to load mentee data", err);
+    }
+  });
+</script>
 
 </body>
 </html>
