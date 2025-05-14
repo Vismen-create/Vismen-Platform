@@ -142,30 +142,37 @@
 
 <script>
 async function highlightSessionDates() {
-  const mentorName = localStorage.getItem('mentorName');  // ✅ Get from storage
+  const mentorName = localStorage.getItem('mentorName');
   if (!mentorName) return;
 
-  const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
-  const sessions = await res.json();
+  try {
+    const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
+    const sessions = await res.json();
 
-  if (sessions && Array.isArray(sessions)) {
-    const sessionDates = sessions.map(s => {
-      const match = s.date.match(/\d+/); // Extract date number from "Thu 25"
-      return match ? match[0] : null;
-    }).filter(Boolean);
+    if (sessions && Array.isArray(sessions)) {
+      const sessionDates = sessions.map(s => {
+        // Extract the numeric day from "Thu 25"
+        const match = s.date.match(/\d+/); 
+        return match ? match[0].replace(/^0/, '') : null; // Remove leading zero
+      }).filter(Boolean);
 
-    const allCells = document.querySelectorAll('.calendar td');
-    allCells.forEach(cell => {
-      const cellDay = cell.textContent.trim();
-      if (sessionDates.includes(cellDay)) {
-        cell.classList.add('active');
-      }
-    });
+      const allCells = document.querySelectorAll('.calendar td');
+      allCells.forEach(cell => {
+        const day = cell.textContent.trim().replace(/^0/, ''); // Also remove leading zero
+        if (sessionDates.includes(day)) {
+          cell.classList.add('active');
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Failed to highlight sessions:", err);
   }
 }
 
 highlightSessionDates();
 </script>
+
+console.log("✅ Sessions from DB:", sessions);
 
 
 
