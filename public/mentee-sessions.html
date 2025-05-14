@@ -5,112 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Sessions - Mentee</title>
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-    .wrapper {
-      flex: 1;
-      display: flex;
-      height: 100vh;
-    }
+    html, body { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; }
+    body { display: flex; flex-direction: column; }
+    .wrapper { flex: 1; display: flex; height: 100vh; }
     .navbar {
       background: linear-gradient(to right, #6a11cb, #2575fc);
-      padding: 20px 30px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 20px 30px; color: white;
+      display: flex; justify-content: space-between; align-items: center;
     }
     .navbar nav a {
-      margin-left: 20px;
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
+      margin-left: 20px; color: white;
+      text-decoration: none; font-weight: 500;
     }
     .sidebar {
-      width: 220px;
-      background-color: #003366;
-      color: white;
-      padding: 20px 0;
-      height: 100%;
+      width: 220px; background-color: #003366;
+      color: white; padding: 20px 0; height: 100%;
     }
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
+    .sidebar h2 { text-align: center; margin-bottom: 30px; }
+    .sidebar ul { list-style: none; padding: 0; }
     .sidebar li {
-      padding: 15px 20px;
-      cursor: pointer;
+      padding: 15px 20px; cursor: pointer;
     }
     .sidebar li.active,
-    .sidebar li:hover {
-      background-color: #004080;
-    }
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-    .main-content {
-      flex: 1;
-      padding: 40px;
-      background-color: #f4f6fc;
-    }
-    .tabs {
-      margin-bottom: 20px;
-    }
+    .sidebar li:hover { background-color: #004080; }
+    .main { flex: 1; display: flex; flex-direction: column; }
+    .main-content { flex: 1; padding: 40px; background-color: #f4f6fc; }
+    .tabs { margin-bottom: 20px; }
     .tabs button {
-      padding: 10px 18px;
-      margin-right: 10px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      background-color: #e0e0e0;
+      padding: 10px 18px; margin-right: 10px;
+      border: none; border-radius: 20px;
+      cursor: pointer; background-color: #e0e0e0;
     }
-    .tabs button.active {
-      background-color: #004de6;
-      color: white;
-    }
+    .tabs button.active { background-color: #004de6; color: white; }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
+      width: 100%; border-collapse: collapse; background: white;
+      border-radius: 10px; overflow: hidden;
     }
     th, td {
-      padding: 16px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
+      padding: 16px; border-bottom: 1px solid #ddd; text-align: left;
     }
-    th {
-      background-color: #f0f0f0;
-    }
+    th { background-color: #f0f0f0; }
     .status {
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 4px;
+      font-weight: bold; padding: 4px 8px; border-radius: 4px;
     }
     .status.upcoming { color: #1a73e8; background-color: #e3f2fd; }
     .status.completed { color: #2e7d32; background-color: #e8f5e9; }
     .status.canceled { color: #c62828; background-color: #ffebee; }
-
+    .cancel-btn {
+      background: #ff4d4d; border: none; color: white;
+      padding: 6px 10px; border-radius: 4px; cursor: pointer;
+    }
+    .cancel-btn:hover { background: #e60000; }
+    .pagination {
+      margin-top: 20px; text-align: center;
+    }
+    .pagination button {
+      margin: 0 5px; padding: 8px 12px;
+      border: none; border-radius: 5px; background: #ccc; cursor: pointer;
+    }
+    .pagination button.active { background: #004de6; color: white; }
     footer {
-      text-align: center;
-      color: white;
-      background: #04367d;
-      padding: 20px;
-      font-size: 14px;
+      text-align: center; color: white;
+      background: #04367d; padding: 20px; font-size: 14px;
     }
   </style>
 </head>
@@ -151,10 +107,12 @@
               <th>Mentor</th>
               <th>Session Topic</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody id="sessionsTableBody"></tbody>
         </table>
+        <div class="pagination" id="pagination"></div>
       </div>
     </div>
   </div>
@@ -164,15 +122,76 @@
   </footer>
 
   <script>
+    let sessionsData = [], currentPage = 1, rowsPerPage = 5;
+
     function filterSessions(status) {
       const rows = document.querySelectorAll("tbody tr");
       rows.forEach(row => {
         row.style.display = row.dataset.status === status ? "table-row" : "none";
       });
 
-      const buttons = document.querySelectorAll(".tabs button");
-      buttons.forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
       document.querySelector(`.tabs button[onclick*="${status}"]`).classList.add("active");
+    }
+
+    function renderPagination() {
+      const pageCount = Math.ceil(sessionsData.length / rowsPerPage);
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+
+      for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add("active");
+        btn.onclick = () => {
+          currentPage = i;
+          renderTable();
+        };
+        pagination.appendChild(btn);
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("sessionsTableBody");
+      tbody.innerHTML = "";
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      const currentSessions = sessionsData.slice(start, end);
+
+      currentSessions.forEach(session => {
+        const sessionDateTime = new Date(`${session.date} ${session.time}`);
+        const now = new Date();
+        let status = session.status || (sessionDateTime < now ? "completed" : "upcoming");
+
+        const row = document.createElement("tr");
+        row.dataset.status = status;
+
+        row.innerHTML = `
+          <td>${session.date}, ${session.time}</td>
+          <td>${session.mentorName}</td>
+          <td>${session.topic}</td>
+          <td><span class="status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+          <td>${status === 'upcoming' ? '<button class="cancel-btn" onclick="cancelSession(\'' + session._id + '\')">Cancel</button>' : ''}</td>
+        `;
+
+        tbody.appendChild(row);
+      });
+
+      const activeTab = document.querySelector(".tabs button.active");
+      if (activeTab) filterSessions(activeTab.textContent.toLowerCase());
+    }
+
+    function cancelSession(id) {
+      fetch(`/cancel-session?id=${id}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            sessionsData = sessionsData.map(s => s._id === id ? { ...s, status: 'canceled' } : s);
+            renderTable();
+          } else {
+            alert("Failed to cancel session");
+          }
+        });
     }
 
     async function loadSessions() {
@@ -185,25 +204,9 @@
       try {
         const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
         const sessions = await res.json();
-
-        const tbody = document.querySelector("#sessionsTableBody");
-        tbody.innerHTML = "";
-
-        sessions.forEach(session => {
-          const status = "upcoming"; // You can make this dynamic later
-          const row = document.createElement("tr");
-          row.setAttribute("data-status", status);
-
-          row.innerHTML = `
-            <td>${session.date}, ${session.time}</td>
-            <td>${session.mentorName}</td>
-            <td>${session.topic}</td>
-            <td><span class="status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
-          `;
-          tbody.appendChild(row);
-        });
-
-        filterSessions('upcoming'); // reapply filtering after load
+        sessionsData = sessions.sort((a, b) => new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`));
+        renderPagination();
+        renderTable();
       } catch (err) {
         console.error("❌ Failed to load sessions:", err);
       }
