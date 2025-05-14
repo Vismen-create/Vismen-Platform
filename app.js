@@ -137,7 +137,7 @@ app.post('/login', async (req, res) => {
       return res.json({
         success: !!mentee,
         email,
-        name: mentee?.name || ''
+        name: mentee?.fullname || ''
       });
     } else {
       return res.status(400).json({ error: "Invalid role" });
