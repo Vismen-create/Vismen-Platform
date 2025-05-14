@@ -223,17 +223,15 @@ app.post('/cancel-session', async (req, res) => {
 
 // Get mentor sessions by email
 app.get('/mentor-sessions', async (req, res) => {
-  const email = req.query.email;
+  const { email } = req.query;
   try {
-    const sessions = await Session.find({ mentorName: { $exists: true }, menteeEmail: { $exists: true } });
-    const filtered = sessions.filter(session => session.mentorName && session.menteeEmail && session.mentorName.toLowerCase().includes(email.split('@')[0].toLowerCase()));
-    
-    const dates = filtered.map(s => s.date.replace(/\D/g, '')); // Extract number from e.g. "Thu 25"
-    res.json({ dates });
+    const sessions = await Session.find({ mentorEmail: email });
+    res.json(sessions);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch sessions' });
+    res.status(500).json({ error: 'Error fetching sessions' });
   }
 });
+
 
 
 

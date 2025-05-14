@@ -141,45 +141,32 @@
 </footer>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email');
-
-  async function loadMentor() {
-    const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(email)}`);
-    const mentor = await res.json();
-
-    if (mentor) {
-      document.getElementById('welcome').textContent = `Welcome, ${mentor.fullname || ''} 👋`;
-      document.getElementById('interest').textContent = mentor.interests || '-';
-      document.getElementById('experience').textContent = mentor.experience || '-';
-      document.getElementById('goals').textContent = mentor.goals || '-';
-      document.getElementById('sessionCount').textContent = mentor.sessions || '0';
-      document.getElementById('earningAmount').textContent = mentor.earnings ? `₹${mentor.earnings}` : '₹0';
-      document.getElementById('reviewRating').textContent = mentor.rating || '0.0';
-    }
-  }
-
   async function highlightSessionDates() {
+    const email = new URLSearchParams(window.location.search).get('email');
     const res = await fetch(`/mentor-sessions?email=${encodeURIComponent(email)}`);
-    const data = await res.json();
+    const sessions = await res.json();
 
-    if (data.dates && Array.isArray(data.dates)) {
+    if (sessions && Array.isArray(sessions)) {
+      const sessionDates = sessions
+        .map(s => {
+          const match = s.date.match(/\d+/); // Extract number from "Thu 25"
+          return match ? match[0] : null;
+        })
+        .filter(Boolean);
+
       const allCells = document.querySelectorAll('.calendar td');
       allCells.forEach(cell => {
-        const day = cell.textContent.trim();
-        if (data.dates.includes(day)) {
+        const cellDay = cell.textContent.trim();
+        if (sessionDates.includes(cellDay)) {
           cell.classList.add('active');
         }
       });
     }
   }
 
-  function logout() {
-    window.location.href = 'login.html';
-  }
-
-  loadMentor();
   highlightSessionDates();
 </script>
+
+
 </body>
 </html>
