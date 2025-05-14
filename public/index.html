@@ -1383,13 +1383,29 @@
   }
 </script>
 
-<script>
-  const menteeEmail = localStorage.getItem("menteeEmail");
-  if (menteeEmail) {
-    // Already logged in, redirect to dashboard
-    window.location.href = "/mentee-dashboard.html?email=" + menteeEmail;
-  }
-</script>
+ <script>
+    const menteeEmail = localStorage.getItem("menteeEmail");
+    const menteeName = localStorage.getItem("menteeName");
+
+    if (menteeEmail) {
+      const nav = document.getElementById("mainNav");
+      nav.innerHTML = `
+        <a href="mentee-dashboard.html">Dashboard</a>
+        <a href="mentee-profile.html">My Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+      `;
+
+      const authDiv = document.getElementById("authButtons");
+      authDiv.innerHTML = `<span style="font-weight: 600; margin-right: 10px; color: white;">Hi, ${menteeName || "Mentee"}</span>
+        <button onclick="logout()" class="btn btn-outline">Logout</button>`;
+    }
+
+    function logout() {
+      localStorage.removeItem("menteeEmail");
+      localStorage.removeItem("menteeName");
+      window.location.href = "index.html";
+    }
+  </script>
 
 </body>
 </html>
