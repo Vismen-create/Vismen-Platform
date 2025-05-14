@@ -147,17 +147,16 @@
     const sessions = await res.json();
 
     if (sessions && Array.isArray(sessions)) {
-      const sessionDates = sessions
-        .map(s => {
-          const match = s.date.match(/\d+/); // Extract number from "Thu 25"
-          return match ? match[0] : null;
-        })
-        .filter(Boolean);
+      // Extract just the day numbers like "25" from "Thu 25"
+      const sessionDays = sessions.map(s => {
+        const match = s.date.match(/\d+/); // safely extract digits
+        return match ? match[0] : null;
+      }).filter(Boolean);
 
       const allCells = document.querySelectorAll('.calendar td');
       allCells.forEach(cell => {
         const cellDay = cell.textContent.trim();
-        if (sessionDates.includes(cellDay)) {
+        if (sessionDays.includes(cellDay)) {
           cell.classList.add('active');
         }
       });
@@ -166,6 +165,7 @@
 
   highlightSessionDates();
 </script>
+
 
 
 </body>
