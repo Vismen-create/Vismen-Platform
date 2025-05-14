@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Sessions - Mentee</title>
   <style>
-    html, body { height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif; }
+    html, body {
+      height: 100%; margin: 0; font-family: 'Segoe UI', sans-serif;
+    }
     body { display: flex; flex-direction: column; }
     .wrapper { flex: 1; display: flex; height: 100vh; }
     .navbar {
@@ -18,28 +20,38 @@
       text-decoration: none; font-weight: 500;
     }
     .sidebar {
-      width: 220px; background-color: #003366;
-      color: white; padding: 20px 0; height: 100%;
+      width: 220px; background-color: #003366; color: white;
+      padding: 20px 0; height: 100%;
     }
-    .sidebar h2 { text-align: center; margin-bottom: 30px; }
+    .sidebar h2 {
+      text-align: center; margin-bottom: 30px;
+    }
     .sidebar ul { list-style: none; padding: 0; }
     .sidebar li {
       padding: 15px 20px; cursor: pointer;
     }
-    .sidebar li.active,
-    .sidebar li:hover { background-color: #004080; }
-    .main { flex: 1; display: flex; flex-direction: column; }
-    .main-content { flex: 1; padding: 40px; background-color: #f4f6fc; }
+    .sidebar li.active, .sidebar li:hover {
+      background-color: #004080;
+    }
+    .main {
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .main-content {
+      flex: 1; padding: 40px; background-color: #f4f6fc;
+    }
     .tabs { margin-bottom: 20px; }
     .tabs button {
       padding: 10px 18px; margin-right: 10px;
-      border: none; border-radius: 20px;
-      cursor: pointer; background-color: #e0e0e0;
+      border: none; border-radius: 20px; cursor: pointer;
+      background-color: #e0e0e0;
     }
-    .tabs button.active { background-color: #004de6; color: white; }
+    .tabs button.active {
+      background-color: #004de6; color: white;
+    }
     table {
-      width: 100%; border-collapse: collapse; background: white;
-      border-radius: 10px; overflow: hidden;
+      width: 100%; border-collapse: collapse;
+      background: white; border-radius: 10px;
+      overflow: hidden;
     }
     th, td {
       padding: 16px; border-bottom: 1px solid #ddd; text-align: left;
@@ -52,167 +64,172 @@
     .status.completed { color: #2e7d32; background-color: #e8f5e9; }
     .status.canceled { color: #c62828; background-color: #ffebee; }
     .cancel-btn {
-      background: #ff4d4d; border: none; color: white;
-      padding: 6px 10px; border-radius: 4px; cursor: pointer;
+      background: #ef4444; color: white; padding: 6px 10px;
+      border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;
     }
-    .cancel-btn:hover { background: #e60000; }
+    .cancel-btn:hover { background: #dc2626; }
     .pagination {
       margin-top: 20px; text-align: center;
     }
     .pagination button {
-      margin: 0 5px; padding: 8px 12px;
-      border: none; border-radius: 5px; background: #ccc; cursor: pointer;
+      padding: 8px 12px; margin: 0 4px;
+      border: 1px solid #ccc; background: #fff; border-radius: 4px;
+      cursor: pointer;
     }
-    .pagination button.active { background: #004de6; color: white; }
+    .pagination button.active { background: #2563eb; color: white; }
     footer {
-      text-align: center; color: white;
-      background: #04367d; padding: 20px; font-size: 14px;
+      text-align: center; color: white; background: #04367d;
+      padding: 20px; font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="sidebar">
-      <h2>VISMEN</h2>
-      <ul>
-        <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
-        <li onclick="location.href='mentee-book.html'">Book Sessions</li>
-        <li class="active">My Sessions</li>
-        <li onclick="location.href='mentee-messages.html'">Messages</li>
-        <li onclick="location.href='mentee-profile.html'">Profile</li>
-      </ul>
+<div class="wrapper">
+  <div class="sidebar">
+    <h2>VISMEN</h2>
+    <ul>
+      <li onclick="location.href='mentee-dashboard.html'">Dashboard</li>
+      <li onclick="location.href='mentee-book.html'">Book Sessions</li>
+      <li class="active">My Sessions</li>
+      <li onclick="location.href='mentee-messages.html'">Messages</li>
+      <li onclick="location.href='mentee-profile.html'">Profile</li>
+    </ul>
+  </div>
+  <div class="main">
+    <div class="navbar">
+      <h1>Mentee Panel</h1>
+      <nav>
+        <a href="#">Browse All Mentors</a>
+        <a href="#">Membership</a>
+        <a href="#">Become a Mentor</a>
+      </nav>
     </div>
-
-    <div class="main">
-      <div class="navbar">
-        <h1>Mentee Panel</h1>
-        <nav>
-          <a href="#">Browse All Mentors</a>
-          <a href="#">Membership</a>
-          <a href="#">Become a Mentor</a>
-        </nav>
+    <div class="main-content">
+      <h2>My Sessions</h2>
+      <div class="tabs">
+        <button class="active" onclick="filterSessions('upcoming')">Upcoming</button>
+        <button onclick="filterSessions('completed')">Completed</button>
+        <button onclick="filterSessions('canceled')">Canceled</button>
       </div>
-
-      <div class="main-content">
-        <h2>My Sessions</h2>
-        <div class="tabs">
-          <button class="active" onclick="filterSessions('upcoming')">Upcoming</button>
-          <button onclick="filterSessions('completed')">Completed</button>
-          <button onclick="filterSessions('canceled')">Canceled</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Date / Time</th>
-              <th>Mentor</th>
-              <th>Session Topic</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="sessionsTableBody"></tbody>
-        </table>
-        <div class="pagination" id="pagination"></div>
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>Mentor</th>
+            <th>Session Topic</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsTableBody"></tbody>
+      </table>
+      <div class="pagination" id="pagination"></div>
     </div>
   </div>
+</div>
+<footer>
+  © 2025 VisMen IT Solutions. All rights reserved.
+</footer>
+<script>
+  const ITEMS_PER_PAGE = 5;
+  let currentPage = 1;
+  let allSessions = [];
 
-  <footer>
-    © 2025 VisMen IT Solutions. All rights reserved.
-  </footer>
+  function filterSessions(status) {
+    document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+    document.querySelector(`.tabs button[onclick*="${status}"]`).classList.add("active");
 
-  <script>
-    let sessionsData = [], currentPage = 1, rowsPerPage = 5;
+    const filtered = allSessions.filter(s => s.status === status);
+    renderTable(filtered, currentPage);
+  }
 
-    function filterSessions(status) {
-      const rows = document.querySelectorAll("tbody tr");
-      rows.forEach(row => {
-        row.style.display = row.dataset.status === status ? "table-row" : "none";
-      });
+  function renderTable(sessions, page) {
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    const paginated = sessions.slice(start, end);
 
-      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
-      document.querySelector(`.tabs button[onclick*="${status}"]`).classList.add("active");
+    const tbody = document.getElementById("sessionsTableBody");
+    tbody.innerHTML = "";
+    paginated.forEach(session => {
+      const row = document.createElement("tr");
+      row.setAttribute("data-status", session.status);
+      row.innerHTML = `
+        <td>${session.date}, ${session.time}</td>
+        <td>${session.mentorName}</td>
+        <td>${session.topic}</td>
+        <td><span class="status ${session.status}">${session.status.charAt(0).toUpperCase() + session.status.slice(1)}</span></td>
+        <td>${session.status === 'upcoming' ? `<button class="cancel-btn" onclick="cancelSession('${session._id}')">Cancel</button>` : ''}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    renderPagination(sessions.length);
+  }
+
+  function renderPagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const container = document.getElementById("pagination");
+    container.innerHTML = "";
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.classList.toggle("active", i === currentPage);
+      btn.onclick = () => {
+        currentPage = i;
+        const currentStatus = document.querySelector(".tabs button.active").textContent.toLowerCase();
+        filterSessions(currentStatus);
+      };
+      container.appendChild(btn);
     }
+  }
 
-    function renderPagination() {
-      const pageCount = Math.ceil(sessionsData.length / rowsPerPage);
-      const pagination = document.getElementById("pagination");
-      pagination.innerHTML = "";
-
-      for (let i = 1; i <= pageCount; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i;
-        if (i === currentPage) btn.classList.add("active");
-        btn.onclick = () => {
-          currentPage = i;
-          renderTable();
-        };
-        pagination.appendChild(btn);
-      }
+  async function loadSessions() {
+    const menteeEmail = localStorage.getItem("menteeEmail");
+    if (!menteeEmail) {
+      alert("Please login to view your sessions.");
+      return;
     }
+    try {
+      const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
+      let sessions = await res.json();
 
-    function renderTable() {
-      const tbody = document.getElementById("sessionsTableBody");
-      tbody.innerHTML = "";
-      const start = (currentPage - 1) * rowsPerPage;
-      const end = start + rowsPerPage;
-      const currentSessions = sessionsData.slice(start, end);
-
-      currentSessions.forEach(session => {
-        const sessionDateTime = new Date(`${session.date} ${session.time}`);
+      sessions = sessions.map(s => {
+        const sessionDate = new Date(`${s.date} ${s.time}`);
         const now = new Date();
-        let status = session.status || (sessionDateTime < now ? "completed" : "upcoming");
-
-        const row = document.createElement("tr");
-        row.dataset.status = status;
-
-        row.innerHTML = `
-          <td>${session.date}, ${session.time}</td>
-          <td>${session.mentorName}</td>
-          <td>${session.topic}</td>
-          <td><span class="status ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
-          <td>${status === 'upcoming' ? '<button class="cancel-btn" onclick="cancelSession(\'' + session._id + '\')">Cancel</button>' : ''}</td>
-        `;
-
-        tbody.appendChild(row);
+        const status = s.status || (sessionDate < now ? "completed" : "upcoming");
+        return { ...s, status };
       });
 
-      const activeTab = document.querySelector(".tabs button.active");
-      if (activeTab) filterSessions(activeTab.textContent.toLowerCase());
+      allSessions = sessions.sort((a, b) => new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`));
+      filterSessions('upcoming');
+    } catch (err) {
+      console.error("❌ Failed to load sessions:", err);
     }
+  }
 
-    function cancelSession(id) {
-      fetch(`/cancel-session?id=${id}`, { method: 'POST' })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            sessionsData = sessionsData.map(s => s._id === id ? { ...s, status: 'canceled' } : s);
-            renderTable();
-          } else {
-            alert("Failed to cancel session");
-          }
-        });
-    }
+  async function cancelSession(id) {
+    const confirmed = confirm("Are you sure you want to cancel this session?");
+    if (!confirmed) return;
 
-    async function loadSessions() {
-      const menteeEmail = localStorage.getItem("menteeEmail");
-      if (!menteeEmail) {
-        alert("Please login to view your sessions.");
-        return;
+    try {
+      const res = await fetch(`/cancel-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert("✅ Session canceled successfully.");
+        loadSessions();
+      } else {
+        alert("❌ Failed to cancel session.");
       }
-
-      try {
-        const res = await fetch(`/get-mentee-sessions?email=${menteeEmail}`);
-        const sessions = await res.json();
-        sessionsData = sessions.sort((a, b) => new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`));
-        renderPagination();
-        renderTable();
-      } catch (err) {
-        console.error("❌ Failed to load sessions:", err);
-      }
+    } catch (error) {
+      alert("❌ Error canceling session.");
     }
+  }
 
-    window.onload = loadSessions;
-  </script>
+  window.onload = loadSessions;
+</script>
 </body>
 </html>
