@@ -258,9 +258,8 @@
 localStorage.setItem('menteeName', result.name || "Mentee");
         window.location.href = '/mentee-dashboard.html';
       } else {
-        // For mentors, you can later store mentorName similarly if needed
-        window.location.href = `/mentor-dashboard.html?email=${encodeURIComponent(email)}`;
-      }
+       localStorage.setItem("mentorName", result.name || "Mentor");
+window.location.href = '/mentor-dashboard.html';      }
 
     } else {
       alert('Invalid email or password. Please try again.');

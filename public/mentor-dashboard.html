@@ -141,30 +141,32 @@
 </footer>
 
 <script>
-  async function highlightSessionDates() {
-    const email = new URLSearchParams(window.location.search).get('email');
-    const res = await fetch(`/mentor-sessions?email=${encodeURIComponent(email)}`);
-    const sessions = await res.json();
+async function highlightSessionDates() {
+  const mentorName = localStorage.getItem('mentorName');  // ✅ Get from storage
+  if (!mentorName) return;
 
-    if (sessions && Array.isArray(sessions)) {
-      // Extract just the day numbers like "25" from "Thu 25"
-      const sessionDays = sessions.map(s => {
-        const match = s.date.match(/\d+/); // safely extract digits
-        return match ? match[0] : null;
-      }).filter(Boolean);
+  const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
+  const sessions = await res.json();
 
-      const allCells = document.querySelectorAll('.calendar td');
-      allCells.forEach(cell => {
-        const cellDay = cell.textContent.trim();
-        if (sessionDays.includes(cellDay)) {
-          cell.classList.add('active');
-        }
-      });
-    }
+  if (sessions && Array.isArray(sessions)) {
+    const sessionDates = sessions.map(s => {
+      const match = s.date.match(/\d+/); // Extract date number from "Thu 25"
+      return match ? match[0] : null;
+    }).filter(Boolean);
+
+    const allCells = document.querySelectorAll('.calendar td');
+    allCells.forEach(cell => {
+      const cellDay = cell.textContent.trim();
+      if (sessionDates.includes(cellDay)) {
+        cell.classList.add('active');
+      }
+    });
   }
+}
 
-  highlightSessionDates();
+highlightSessionDates();
 </script>
+
 
 
 

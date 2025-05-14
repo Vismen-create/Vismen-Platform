@@ -221,16 +221,18 @@ app.post('/cancel-session', async (req, res) => {
   }
 });
 
-// Get mentor sessions by email
+// Get mentor sessions by mentor name
 app.get('/mentor-sessions', async (req, res) => {
-  const { email } = req.query;
+  const { mentorName } = req.query;
   try {
-    const sessions = await Session.find({ mentorEmail: email });
+    const sessions = await Session.find({ mentorName });
     res.json(sessions);
   } catch (err) {
+    console.error("❌ Error fetching sessions:", err);
     res.status(500).json({ error: 'Error fetching sessions' });
   }
 });
+
 
 
 
