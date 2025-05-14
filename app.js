@@ -196,6 +196,26 @@ app.use(cors({
 
 
 
+// Cancel a session
+app.post('/cancel-session', async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const result = await Session.findByIdAndUpdate(id, { status: 'canceled' });
+    if (!result) {
+      return res.status(404).json({ success: false, error: 'Session not found' });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Error canceling session:", err);
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+});
+
+
+
+
 // ✅ Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
