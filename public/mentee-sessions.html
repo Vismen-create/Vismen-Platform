@@ -99,9 +99,10 @@
     <div class="navbar">
       <h1>Mentee Panel</h1>
       <nav>
-        <a href="#">Browse All Mentors</a>
-        <a href="#">Membership</a>
-        <a href="#">Become a Mentor</a>
+        <a href="browse-mentors.html">Browse All Mentors</a>
+        <a href="membership.html">Membership</a>
+        <a href="MentorSignup.html">Become a Mentor</a>
+        <a href="#" onclick="logout()" style="color: red;">Logout</a>
       </nav>
     </div>
     <div class="main-content">
@@ -134,6 +135,11 @@
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
   let allSessions = [];
+
+  function logout() {
+    localStorage.removeItem("menteeEmail");
+    window.location.href = "/login.html";
+  }
 
   function filterSessions(status) {
     document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
@@ -187,6 +193,7 @@
     const menteeEmail = localStorage.getItem("menteeEmail");
     if (!menteeEmail) {
       alert("Please login to view your sessions.");
+      window.location.href = "/login.html";
       return;
     }
     try {

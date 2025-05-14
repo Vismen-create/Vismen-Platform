@@ -1383,6 +1383,13 @@
   }
 </script>
 
+<script>
+  const menteeEmail = localStorage.getItem("menteeEmail");
+  if (menteeEmail) {
+    // Already logged in, redirect to dashboard
+    window.location.href = "/mentee-dashboard.html?email=" + menteeEmail;
+  }
+</script>
 
 </body>
 </html>
