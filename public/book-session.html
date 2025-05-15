@@ -178,89 +178,94 @@
   </div>
 
   <script>
-    function setupToggle(selector) {
-      document.querySelectorAll(selector).forEach(button => {
-        button.addEventListener('click', () => {
-          document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-        });
+  function setupToggle(selector) {
+    document.querySelectorAll(selector).forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
       });
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    setupToggle('.time-slots button');
+    setupToggle('.session-type button');
+    setupToggle('.payment-options button');
+  });
+
+  const menteeEmail = localStorage.getItem('menteeEmail');
+  if (!menteeEmail) {
+    alert("Please log in as a mentee to continue.");
+    window.location.href = "/login.html";
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const mentorEmail = urlParams.get('email');
+  let mentorName = "";
+
+  async function loadMentorDetails() {
+    try {
+      const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
+      const mentor = await res.json();
+      if (mentor) {
+        mentorName = mentor.name;
+        localStorage.setItem("mentorName", mentorName); // optional
+        localStorage.setItem("mentorEmail", mentorEmail); // optional
+
+        document.getElementById("mentorName").textContent = mentor.name;
+        document.getElementById("mentorNameRight").textContent = mentor.name;
+        document.getElementById("mentorTitle").textContent = mentor.title;
+        document.getElementById("mentorCompany").textContent = mentor.company;
+        document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
+      } else {
+        alert("Mentor not found");
+      }
+    } catch (err) {
+      console.error("Failed to fetch mentor details:", err);
+      alert("Error loading mentor details.");
+    }
+  }
+
+  loadMentorDetails();
+
+  async function bookSession() {
+    const date = document.querySelector(".time-slots button.active")?.textContent;
+    const topic = document.querySelector(".session-type button.active")?.textContent;
+    const payment = document.querySelector(".payment-options button.active")?.textContent;
+    const problem = document.getElementById("desc").value;
+    const time = date?.split("-")[1]?.trim();
+    const day = date?.split("-")[0]?.trim();
+
+    if (!date || !topic || !payment) {
+      alert("Please select all fields.");
+      return;
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      setupToggle('.time-slots button');
-      setupToggle('.session-type button');
-      setupToggle('.payment-options button');
+    const res = await fetch('/book-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        menteeEmail,
+        mentorEmail,
+        mentorName,
+        date: day,
+        time,
+        topic,
+        payment,
+        problem,
+        status: 'upcoming'
+      })
     });
 
-    const menteeEmail = localStorage.getItem('menteeEmail');
-    if (!menteeEmail) {
-      alert("Please log in as a mentee to continue.");
-      window.location.href = "/login.html";
+    const result = await res.json();
+    if (result.success) {
+      alert("✅ Session booked successfully!");
+      window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
+    } else {
+      alert("❌ Booking failed.");
     }
+  }
+</script>
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const mentorEmail = urlParams.get('email');
-
-    async function loadMentorDetails() {
-      try {
-        const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
-        const mentor = await res.json();
-        if (mentor) {
-          document.getElementById("mentorName").textContent = mentor.name;
-          document.getElementById("mentorNameRight").textContent = mentor.name;
-          document.getElementById("mentorTitle").textContent = mentor.title;
-          document.getElementById("mentorCompany").textContent = mentor.company;
-          document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
-        } else {
-          alert("Mentor not found");
-        }
-      } catch (err) {
-        console.error("Failed to fetch mentor details:", err);
-        alert("Error loading mentor details.");
-      }
-    }
-
-    loadMentorDetails();
-
-    async function bookSession() {
-      const date = document.querySelector(".time-slots button.active")?.textContent;
-      const topic = document.querySelector(".session-type button.active")?.textContent;
-      const payment = document.querySelector(".payment-options button.active")?.textContent;
-      const problem = document.getElementById("desc").value;
-      const time = date?.split("-")[1]?.trim();
-      const day = date?.split("-")[0]?.trim();
-
-      if (!date || !topic || !payment) {
-        alert("Please select all fields.");
-        return;
-      }
-
-      console.log({ date, topic, payment, time, day, problem });
-
-      const res = await fetch('/book-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          menteeEmail,
-          mentorEmail,
-          mentorName: document.getElementById("mentorName").textContent,
-          date: day,
-          time,
-          topic,
-          payment,
-          problem
-        })
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        alert("✅ Session booked successfully!");
-        window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
-      } else {
-        alert("❌ Booking failed.");
-      }
-    }
-  </script>
 </body>
 </html>
