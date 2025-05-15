@@ -11,7 +11,6 @@
       background-color: #f4f6fc;
       color: #1e293b;
     }
-
     .navbar {
       background: linear-gradient(to right, #6a11cb, #2575fc);
       padding: 15px 30px;
@@ -20,14 +19,12 @@
       align-items: center;
       color: white;
     }
-
     .navbar a {
       color: white;
       text-decoration: none;
       margin-left: 20px;
       font-weight: 500;
     }
-
     .booking-container {
       max-width: 1000px;
       margin: 40px auto;
@@ -38,22 +35,18 @@
       display: flex;
       gap: 30px;
     }
-
     .left, .right {
       flex: 1;
     }
-
     h2 {
       margin-top: 0;
     }
-
     label {
       display: block;
       font-weight: 600;
       margin-top: 15px;
       margin-bottom: 5px;
     }
-
     input, select, textarea {
       width: 100%;
       padding: 10px;
@@ -61,7 +54,6 @@
       border: 1px solid #ccc;
       font-size: 1rem;
     }
-
     .time-slots button,
     .session-type button,
     .payment-options button {
@@ -72,13 +64,11 @@
       background-color: #fff;
       cursor: pointer;
     }
-
     .active {
       background-color: #3b82f6;
       color: white;
       border-color: #3b82f6;
     }
-
     .confirm-btn {
       margin-top: 20px;
       width: 100%;
@@ -91,25 +81,21 @@
       font-weight: 600;
       cursor: pointer;
     }
-
     .confirm-btn:hover {
       background-color: #ea580c;
     }
-
     .mentor-card {
       background-color: #f9fafb;
       padding: 20px;
       border-radius: 8px;
       text-align: center;
     }
-
     .mentor-card img {
       width: 100px;
       height: 100px;
       border-radius: 50%;
       object-fit: cover;
     }
-
     .footer {
       background-color: #0f172a;
       color: white;
@@ -178,102 +164,99 @@
   </div>
 
   <script>
-  function setupToggle(selector) {
-    document.querySelectorAll(selector).forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+    function setupToggle(selector) {
+      document.querySelectorAll(selector).forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+        });
       });
-    });
-  }
-
-  const menteeEmail = localStorage.getItem('menteeEmail');
-  if (!menteeEmail) {
-    alert("Please log in as a mentee to continue.");
-    window.location.href = "/login.html";
-  }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const mentorEmail = urlParams.get('email');
-let mentorName = "";
-let mentorLoaded = false; // Add this line
-
-  async function loadMentorDetails() {
-    try {
-      const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
-      const mentor = await res.json();
-      if (mentor) {
-        mentorName = mentor.name;
-              mentorLoaded = true; // Set the flag here
-
-        localStorage.setItem("mentorName", mentorName); // optional
-        localStorage.setItem("mentorEmail", mentorEmail); // optional
-
-        document.getElementById("mentorName").textContent = mentor.name;
-        document.getElementById("mentorNameRight").textContent = mentor.name;
-        document.getElementById("mentorTitle").textContent = mentor.title;
-        document.getElementById("mentorCompany").textContent = mentor.company;
-        document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
-      } else {
-        alert("Mentor not found");
-      }
-    } catch (err) {
-      console.error("Failed to fetch mentor details:", err);
-      alert("Error loading mentor details.");
     }
-  }
 
-  window.addEventListener('DOMContentLoaded', async () => {
-  setupToggle('.time-slots button');
-  setupToggle('.session-type button');
-  setupToggle('.payment-options button');
-  await loadMentorDetails(); 
+    const menteeEmail = localStorage.getItem('menteeEmail');
+    if (!menteeEmail) {
+      alert("Please log in as a mentee to continue.");
+      window.location.href = "/login.html";
+    }
 
-  loadMentorDetails();
+    const urlParams = new URLSearchParams(window.location.search);
+    const mentorEmail = urlParams.get('email');
+    let mentorName = "";
+    let mentorLoaded = false;
 
-  async function bookSession() {
-  if (!mentorLoaded) {
-    alert("Mentor data not yet loaded. Please wait a moment.");
-    return;
-  }
+    async function loadMentorDetails() {
+      try {
+        const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
+        const mentor = await res.json();
+        if (mentor) {
+          mentorName = mentor.name;
+          mentorLoaded = true;
+          localStorage.setItem("mentorName", mentorName);
+          localStorage.setItem("mentorEmail", mentorEmail);
 
-  const date = document.querySelector(".time-slots button.active")?.textContent;
-  const topic = document.querySelector(".session-type button.active")?.textContent;
-  const payment = document.querySelector(".payment-options button.active")?.textContent;
-  const problem = document.getElementById("desc").value;
-  const time = date?.split("-")[1]?.trim();
-  const day = date?.split("-")[0]?.trim();
+          document.getElementById("mentorName").textContent = mentor.name;
+          document.getElementById("mentorNameRight").textContent = mentor.name;
+          document.getElementById("mentorTitle").textContent = mentor.title;
+          document.getElementById("mentorCompany").textContent = mentor.company;
+          document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
+        } else {
+          alert("Mentor not found.");
+        }
+      } catch (err) {
+        console.error("Error loading mentor details:", err);
+        alert("Error loading mentor details.");
+      }
+    }
 
-  if (!date || !topic || !payment) {
-    alert("Please select all fields.");
-    return;
-  }
+    async function bookSession() {
+      if (!mentorLoaded) {
+        alert("Mentor info not loaded yet. Please wait.");
+        return;
+      }
 
-  const res = await fetch('/book-session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      menteeEmail,
-      mentorEmail,
-      mentorName,
-      date: day,
-      time,
-      topic,
-      payment,
-      problem,
-      status: 'upcoming'
-    })
-  });
+      const date = document.querySelector(".time-slots button.active")?.textContent;
+      const topic = document.querySelector(".session-type button.active")?.textContent;
+      const payment = document.querySelector(".payment-options button.active")?.textContent;
+      const problem = document.getElementById("desc").value;
+      const time = date?.split("-")[1]?.trim();
+      const day = date?.split("-")[0]?.trim();
 
-  const result = await res.json();
-  if (result.success) {
-    alert("✅ Session booked successfully!");
-    window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
-  } else {
-    alert("❌ Booking failed.");
-  }
-}
-</script>
+      if (!date || !topic || !payment) {
+        alert("Please select all fields.");
+        return;
+      }
 
+      const res = await fetch('/book-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          menteeEmail,
+          mentorEmail,
+          mentorName,
+          date: day,
+          time,
+          topic,
+          payment,
+          problem,
+          status: 'upcoming'
+        })
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert("✅ Session booked successfully!");
+        window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
+      } else {
+        alert("❌ Booking failed.");
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      setupToggle('.time-slots button');
+      setupToggle('.session-type button');
+      setupToggle('.payment-options button');
+      await loadMentorDetails();
+    });
+  </script>
 </body>
 </html>
