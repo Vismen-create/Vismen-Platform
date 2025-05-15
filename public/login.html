@@ -259,6 +259,7 @@ localStorage.setItem('menteeName', result.name || "Mentee");
         window.location.href = '/mentee-dashboard.html';
       } else {
        localStorage.setItem("mentorName", result.name || "Mentor");
+       localStorage.setItem('email', email); // ✅ Add this line
 window.location.href = '/mentor-dashboard.html';      }
 
     } else {

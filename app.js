@@ -148,7 +148,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// ✅ Get Mentor by Email
 app.get('/get-mentor-data', async (req, res) => {
   try {
     const mentor = await Mentor.findOne({ email: req.query.email });
@@ -156,22 +155,19 @@ app.get('/get-mentor-data', async (req, res) => {
 
     const sessions = await Session.find({ mentorName: mentor.name });
 
-    // Calculate metrics
-    const totalSessions = sessions.length;
-    const totalEarnings = totalSessions * 800; // example ₹800 per session
-    const averageRating = 4.8; // hardcoded or calculated from review model (if available)
-
-    res.json({
+    const response = {
       fullname: mentor.name,
       interests: mentor.title || '-',
       experience: mentor.company || '-',
-      goals: mentor.tags.join(', ') || '-',
-      sessions: totalSessions,
-      earnings: totalEarnings,
-      rating: averageRating
-    });
+      goals: mentor.tags?.join(', ') || '-',
+      sessions: sessions.length,
+      earnings: sessions.length * 1000, // Just for example
+      rating: 4.8 // Example value
+    };
+
+    res.json(response);
   } catch (err) {
-    console.error("❌ Error fetching mentor:", err);
+    console.error("❌ Error fetching mentor data:", err);
     res.status(500).json({ error: 'Server error' });
   }
 });
