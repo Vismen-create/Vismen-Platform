@@ -187,12 +187,6 @@
     });
   }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    setupToggle('.time-slots button');
-    setupToggle('.session-type button');
-    setupToggle('.payment-options button');
-  });
-
   const menteeEmail = localStorage.getItem('menteeEmail');
   if (!menteeEmail) {
     alert("Please log in as a mentee to continue.");
@@ -228,6 +222,12 @@ let mentorLoaded = false; // Add this line
       alert("Error loading mentor details.");
     }
   }
+
+  window.addEventListener('DOMContentLoaded', async () => {
+  setupToggle('.time-slots button');
+  setupToggle('.session-type button');
+  setupToggle('.payment-options button');
+  await loadMentorDetails(); 
 
   loadMentorDetails();
 
