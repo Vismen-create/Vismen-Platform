@@ -263,16 +263,27 @@ app.get('/get-mentor-profile', async (req, res) => {
   }
 });
 
-app.post('/update-mentor-profile', async (req, res) => {
-  const { email, ...updateFields } = req.body;
+app.post("/update-mentor-profile", async (req, res) => {
+  const { email, phone, languages, skills, experience, bio, payout, payoutFrequency } = req.body;
+
   try {
-    const result = await Mentor.updateOne({ email }, { $set: updateFields });
-    res.json({ success: result.modifiedCount > 0 });
+    const updated = await Mentor.findOneAndUpdate(
+      { email },
+      {
+        $set: { phone, languages, skills, experience, bio, payout, payoutFrequency }
+      },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ error: "Mentor not found" });
+
+    res.json({ message: "Profile updated successfully" });
   } catch (err) {
     console.error("Update failed:", err);
-    res.status(500).json({ success: false });
+    res.status(500).json({ error: "Update failed" });
   }
 });
+
 
 
 
