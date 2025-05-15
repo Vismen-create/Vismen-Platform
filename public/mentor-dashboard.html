@@ -139,63 +139,80 @@
   <footer class="footer">
     © 2025 VisMen IT Solutions. All rights reserved.
   </footer>
+<script>
+async function loadMentorDashboard() {
+  const mentorName = localStorage.getItem('mentorName');
+  if (!mentorName) return;
 
-  <script>
-  async function loadMentorDashboard() {
-    const mentorName = localStorage.getItem('mentorName');
-    if (!mentorName) return;
-
-    // Fetch full mentor data (name, sessions, earnings, etc.)
-    const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(localStorage.getItem('email'))}`);
+  try {
+    // Fetch mentor profile
+    const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(mentorName + '@gmail.com')}`);
     const mentor = await res.json();
 
-    if (mentor) {
-      document.getElementById('welcome').textContent = `Welcome, ${mentor.fullname || ''} 👋`;
-      document.getElementById('interest').textContent = mentor.interests || '-';
-      document.getElementById('experience').textContent = mentor.experience || '-';
-      document.getElementById('goals').textContent = mentor.goals || '-';
-      document.getElementById('sessionCount').textContent = mentor.sessions || '0';
-      document.getElementById('earningAmount').textContent = `₹${mentor.earnings || 0}`;
-      document.getElementById('reviewRating').textContent = mentor.rating || '0.0';
-    }
+    document.getElementById('welcome').textContent = `Welcome, ${mentor.name || ''} 👋`;
+    document.getElementById('interest').textContent = mentor.title || '-';
+    document.getElementById('experience').textContent = mentor.company || '-';
+    document.getElementById('goals').textContent = mentor.tags?.join(', ') || '-';
+
+  } catch (err) {
+    console.error("❌ Failed to load mentor info", err);
   }
+}
 
-  async function highlightSessionDates() {
-    const mentorName = localStorage.getItem('mentorName');
-    if (!mentorName) return;
+async function loadMentorStats() {
+  const mentorName = localStorage.getItem('mentorName');
+  if (!mentorName) return;
 
-    try {
-      const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
-      const sessions = await res.json();
+  try {
+    const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
+    const sessions = await res.json();
 
-      if (sessions && Array.isArray(sessions)) {
-        const sessionDates = sessions.map(s => {
-          const match = s.date.match(/\d+/); // Extract day from "Fri 26"
-          return match ? match[0].replace(/^0/, '') : null;
-        }).filter(Boolean);
+    const totalSessions = sessions.length;
+    const totalEarnings = totalSessions * 300; // Assume ₹300 per session
+    const avgRating = (mentorName === 'Rithvik') ? '4.8' : '4.5'; // Optional: Mock
 
-        const allCells = document.querySelectorAll('.calendar td');
-        allCells.forEach(cell => {
-          const day = cell.textContent.trim().replace(/^0/, '');
-          if (sessionDates.includes(day)) {
-            cell.classList.add('active');
-          }
-        });
+    document.getElementById('sessionCount').textContent = totalSessions || '0';
+    document.getElementById('earningAmount').textContent = `₹${totalEarnings}`;
+    document.getElementById('reviewRating').textContent = avgRating;
+
+  } catch (err) {
+    console.error("❌ Failed to load session stats", err);
+  }
+}
+
+async function highlightSessionDates() {
+  const mentorName = localStorage.getItem('mentorName');
+  if (!mentorName) return;
+
+  try {
+    const res = await fetch(`/mentor-sessions?mentorName=${encodeURIComponent(mentorName)}`);
+    const sessions = await res.json();
+
+    const sessionDates = sessions.map(s => {
+      const match = s.date.match(/\d+/);
+      return match ? match[0].replace(/^0/, '') : null;
+    }).filter(Boolean);
+
+    const allCells = document.querySelectorAll('.calendar td');
+    allCells.forEach(cell => {
+      const day = cell.textContent.trim().replace(/^0/, '');
+      if (sessionDates.includes(day)) {
+        cell.classList.add('active');
       }
-    } catch (err) {
-      console.error("Failed to highlight sessions:", err);
-    }
+    });
+  } catch (err) {
+    console.error("❌ Failed to highlight calendar dates", err);
   }
+}
 
-  // Call both on page load
-  loadMentorDashboard();
-  highlightSessionDates();
+function logout() {
+  localStorage.clear();
+  window.location.href = 'login.html';
+}
 
-  // Logout handler
-  function logout() {
-    localStorage.clear();
-    window.location.href = 'login.html';
-  }
+loadMentorDashboard();
+loadMentorStats();
+highlightSessionDates();
 </script>
 
 
