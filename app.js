@@ -264,14 +264,16 @@ app.get('/get-mentor-profile', async (req, res) => {
 });
 
 app.post('/update-mentor-profile', async (req, res) => {
+  const { email, ...updateFields } = req.body;
   try {
-    const { email, ...rest } = req.body;
-    const result = await Mentor.updateOne({ email }, { $set: rest });
+    const result = await Mentor.updateOne({ email }, { $set: updateFields });
     res.json({ success: result.modifiedCount > 0 });
   } catch (err) {
-    res.status(500).json({ success: false, error: 'Server Error' });
+    console.error("Update failed:", err);
+    res.status(500).json({ success: false });
   }
 });
+
 
 
 
