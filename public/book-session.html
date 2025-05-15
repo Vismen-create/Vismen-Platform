@@ -166,43 +166,47 @@
   <script>
   function setupToggle(selector) {
     document.querySelectorAll(selector).forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll(selector).forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+      button.addEventListener("click", () => {
+        document.querySelectorAll(selector).forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
       });
     });
   }
 
-  const menteeEmail = localStorage.getItem('menteeEmail');
+  const menteeEmail = localStorage.getItem("menteeEmail");
   if (!menteeEmail) {
     alert("Please log in as a mentee to continue.");
     window.location.href = "/login.html";
   }
 
   const urlParams = new URLSearchParams(window.location.search);
-  const mentorEmail = urlParams.get('email');
-  let mentorName = ""; // declared globally
+  const mentorEmail = urlParams.get("email");
+
+  let mentorName = ""; // global
 
   async function loadMentorDetails() {
     try {
       const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
       const mentor = await res.json();
-      if (mentor) {
-        mentorName = mentor.name; // ✅ set global variable
-        localStorage.setItem("mentorName", mentorName);
-        localStorage.setItem("mentorEmail", mentorEmail);
 
-        document.getElementById("mentorName").textContent = mentor.name;
-        document.getElementById("mentorNameRight").textContent = mentor.name;
-        document.getElementById("mentorTitle").textContent = mentor.title;
-        document.getElementById("mentorCompany").textContent = mentor.company;
-        document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
-      } else {
-        alert("Mentor not found");
+      if (!mentor || !mentor.name) {
+        alert("Mentor not found or invalid data.");
+        return false;
       }
+
+      mentorName = mentor.name;
+
+      document.getElementById("mentorName").textContent = mentor.name;
+      document.getElementById("mentorNameRight").textContent = mentor.name;
+      document.getElementById("mentorTitle").textContent = mentor.title;
+      document.getElementById("mentorCompany").textContent = mentor.company;
+      document.getElementById("mentorImage").src = mentor.image || "/Mentor1.jpg";
+
+      return true;
     } catch (err) {
-      console.error("Failed to fetch mentor details:", err);
+      console.error("Failed to load mentor:", err);
       alert("Error loading mentor details.");
+      return false;
     }
   }
 
@@ -220,43 +224,56 @@
     }
 
     if (!mentorName) {
-      alert("Mentor name not loaded. Please wait a moment and try again.");
+      alert("Mentor name not loaded. Please wait a second or refresh.");
       return;
     }
 
-    const res = await fetch('/book-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        menteeEmail,
-        mentorEmail,
-        mentorName, // ✅ ensure it is coming from global variable
-        date: day,
-        time,
-        topic,
-        payment,
-        problem,
-        status: 'upcoming'
-      })
-    });
+    const payload = {
+      menteeEmail,
+      mentorEmail,
+      mentorName,
+      date: day,
+      time,
+      topic,
+      payment,
+      problem,
+      status: "upcoming"
+    };
 
-    const result = await res.json();
-    if (result.success) {
-      alert("✅ Session booked successfully!");
-      window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
-    } else {
-      alert("❌ Booking failed.");
+    try {
+      const res = await fetch("/book-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert("✅ Session booked successfully!");
+        window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
+      } else {
+        alert("❌ Booking failed. Try again.");
+      }
+    } catch (err) {
+      console.error("Booking failed:", err);
+      alert("❌ Error booking session.");
     }
   }
 
-  // ✅ run this on load
-  window.addEventListener('DOMContentLoaded', async () => {
-    setupToggle('.time-slots button');
-    setupToggle('.session-type button');
-    setupToggle('.payment-options button');
-    await loadMentorDetails(); // wait for mentorName before booking
+  window.addEventListener("DOMContentLoaded", async () => {
+    setupToggle(".time-slots button");
+    setupToggle(".session-type button");
+    setupToggle(".payment-options button");
+
+    const mentorLoaded = await loadMentorDetails();
+
+    if (!mentorLoaded) {
+      document.querySelector(".confirm-btn").disabled = true;
+      document.querySelector(".confirm-btn").textContent = "Mentor not loaded";
+    }
   });
 </script>
+
 
 </body>
 </html>
