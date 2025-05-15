@@ -201,7 +201,8 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const mentorEmail = urlParams.get('email');
-  let mentorName = "";
+let mentorName = "";
+let mentorLoaded = false; // Add this line
 
   async function loadMentorDetails() {
     try {
@@ -209,6 +210,8 @@
       const mentor = await res.json();
       if (mentor) {
         mentorName = mentor.name;
+              mentorLoaded = true; // Set the flag here
+
         localStorage.setItem("mentorName", mentorName); // optional
         localStorage.setItem("mentorEmail", mentorEmail); // optional
 
@@ -229,6 +232,11 @@
   loadMentorDetails();
 
   async function bookSession() {
+  if (!mentorLoaded) {
+    alert("Mentor data not yet loaded. Please wait a moment.");
+    return;
+  }
+
   const date = document.querySelector(".time-slots button.active")?.textContent;
   const topic = document.querySelector(".session-type button.active")?.textContent;
   const payment = document.querySelector(".payment-options button.active")?.textContent;
@@ -247,7 +255,7 @@
     body: JSON.stringify({
       menteeEmail,
       mentorEmail,
-      mentorName: document.getElementById("mentorName").textContent,
+      mentorName,
       date: day,
       time,
       topic,
