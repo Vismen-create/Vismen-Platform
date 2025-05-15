@@ -134,6 +134,41 @@
       border-radius: 50%;
       margin-right: 20px;
     }
+
+     .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 500px;
+    }
+
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .modal-content button {
+      background-color: #3654ff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -151,8 +186,8 @@
   <div class="main-content">
     <div class="header">
       <h1>Account</h1>
-      <button class="btn-edit">Edit Profile</button>
-    </div>
+ <button class="btn-edit" onclick="openModal()">Edit Profile</button>
+      </div>
 
     <div class="profile-section">
       <div class="profile-pic">
@@ -237,43 +272,101 @@
     </footer>
   </div>
 
+   <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h3>Edit Mentor Profile</h3>
+      <input type="text" id="inputPhone" placeholder="Phone">
+      <input type="text" id="inputLanguages" placeholder="Languages">
+      <input type="text" id="inputExpertise" placeholder="Expertise Areas">
+      <input type="text" id="inputExperience" placeholder="Experience">
+      <textarea id="inputBio" placeholder="Bio"></textarea>
+      <input type="text" id="inputPayout" placeholder="Payout Account">
+      <input type="text" id="inputFrequency" placeholder="Payout Frequency">
+      <button onclick="saveProfile()">Save</button>
+    </div>
+  </div>
+
   <script>
-    const email = localStorage.getItem('email');
-    if (!email) {
-      alert("Please log in first.");
-      window.location.href = "/login.html";
+  const email = localStorage.getItem('email');
+  if (!email) {
+    alert("Please log in first.");
+    window.location.href = "/login.html";
+  }
+
+  let mentorData = {};
+
+  async function loadMentorProfile() {
+    try {
+      const res = await fetch(`/get-mentor-data?email=${email}`);
+      const data = await res.json();
+      if (data.error) return alert(data.error);
+
+      mentorData = data;
+
+      document.getElementById("mentorImage").src = data.image || "Mentor1.jpg";
+      document.getElementById("mentorName").textContent = data.name || "Mentor";
+      document.getElementById("fullName").textContent = data.name || "-";
+      document.getElementById("email").textContent = data.email || "-";
+      document.getElementById("phone").textContent = data.phone || "*XXXX";
+      document.getElementById("languages").textContent = data.languages || "-";
+      document.getElementById("skills").textContent = data.expertise || "-";
+      document.getElementById("experience").textContent = data.experience || "-";
+      document.getElementById("bio").textContent = data.bio || "-";
+      document.getElementById("resume").href = data.resume || "#";
+      document.getElementById("payout").textContent = data.payout || "-";
+      document.getElementById("payoutFrequency").textContent = data.frequency || "-";
+    } catch (err) {
+      console.error("Error loading mentor profile:", err);
+      alert("Failed to load profile.");
     }
+  }
 
-    async function loadMentorProfile() {
-      try {
-        const res = await fetch(`/get-mentor-profile?email=${email}`);
-        const data = await res.json();
+  function openModal() {
+    document.getElementById("editModal").style.display = "flex";
+    document.getElementById("inputPhone").value = mentorData.phone || '';
+    document.getElementById("inputLanguages").value = mentorData.languages || '';
+    document.getElementById("inputExpertise").value = mentorData.expertise || '';
+    document.getElementById("inputExperience").value = mentorData.experience || '';
+    document.getElementById("inputBio").value = mentorData.bio || '';
+    document.getElementById("inputPayout").value = mentorData.payout || '';
+    document.getElementById("inputFrequency").value = mentorData.frequency || '';
+  }
 
-        if (data.error) {
-          alert(data.error);
-          return;
-        }
+  async function saveProfile() {
+    const updated = {
+      email,
+      phone: document.getElementById("inputPhone").value,
+      languages: document.getElementById("inputLanguages").value,
+      expertise: document.getElementById("inputExpertise").value,
+      experience: document.getElementById("inputExperience").value,
+      bio: document.getElementById("inputBio").value,
+      payout: document.getElementById("inputPayout").value,
+      frequency: document.getElementById("inputFrequency").value
+    };
 
-        // Populate all fields
-        document.getElementById("mentorImage").src = data.image || "/Mentor1.jpg";
-        document.getElementById("mentorName").textContent = data.name || "Mentor";
-        document.getElementById("fullName").textContent = data.name || "-";
-        document.getElementById("email").textContent = data.email || "-";
-        document.getElementById("phone").textContent = data.phone || "*XXXX";
-        document.getElementById("languages").textContent = data.languages || "-";
-        document.getElementById("skills").textContent = data.skills || "-";
-        document.getElementById("experience").textContent = data.experience || "-";
-        document.getElementById("bio").textContent = data.bio || "-";
-        document.getElementById("resume").href = data.resume || "#";
-        document.getElementById("payout").textContent = data.payout || "-";
-        document.getElementById("payoutFrequency").textContent = data.payoutFrequency || "Monthly";
-      } catch (err) {
-        console.error("Error loading mentor profile:", err);
-        alert("Failed to load profile.");
+    try {
+      const res = await fetch('/update-mentor-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert("✅ Profile updated!");
+        document.getElementById("editModal").style.display = "none";
+        loadMentorProfile();
+      } else {
+        alert("❌ Update failed.");
       }
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      alert("Error occurred during update.");
     }
+  }
 
-    window.addEventListener('DOMContentLoaded', loadMentorProfile);
-  </script>
+  window.addEventListener('DOMContentLoaded', loadMentorProfile);
+</script>
+
 </body>
 </html>

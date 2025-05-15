@@ -263,6 +263,15 @@ app.get('/get-mentor-profile', async (req, res) => {
   }
 });
 
+app.post('/update-mentor-profile', async (req, res) => {
+  try {
+    const { email, ...rest } = req.body;
+    const result = await Mentor.updateOne({ email }, { $set: rest });
+    res.json({ success: result.modifiedCount > 0 });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Server Error' });
+  }
+});
 
 
 
