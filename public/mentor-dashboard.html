@@ -99,7 +99,7 @@
 
   <div class="dashboard-content">
     <div class="top-welcome">
-      <h2 id="welcome">Welcome 👋</h2>
+<h2>Welcome, <span id="mentorNameSpan">👋</span></h2>
     </div>
 
     <div class="mentor-info" style="margin-bottom: 20px;">
@@ -210,9 +210,13 @@ function logout() {
   window.location.href = 'login.html';
 }
 
+   const mentorName = localStorage.getItem("mentorName") || "👋";
+    document.getElementById("mentorNameSpan").textContent = mentorName;
 loadMentorDashboard();
 loadMentorStats();
 highlightSessionDates();
+
+ 
 </script>
 
 
