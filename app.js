@@ -264,27 +264,31 @@ app.get('/get-mentor-profile', async (req, res) => {
 });
 
 app.post("/update-mentor-profile", async (req, res) => {
-  const { email, phone, languages, skills, experience, bio, payout, payoutFrequency } = req.body;
-
   try {
-    const updated = await Mentor.findOneAndUpdate(
-      { email },
-      {
-        $set: { phone, languages, skills, experience, bio, payout, payoutFrequency }
-      },
-      { new: true }
-    );
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
+    const updateFields = {
+      phone: req.body.phone,
+      languages: req.body.languages,
+      skills: req.body.skills,
+      experience: req.body.experience,
+      bio: req.body.bio,
+      resume: req.body.resume,
+      payout: req.body.payout,
+      payoutFrequency: req.body.payoutFrequency,
+    };
+
+    const updated = await Mentor.findOneAndUpdate({ email }, updateFields, { new: true });
 
     if (!updated) return res.status(404).json({ error: "Mentor not found" });
 
-    res.json({ message: "Profile updated successfully" });
+    res.json({ message: "✅ Profile updated successfully" });
   } catch (err) {
-    console.error("Update failed:", err);
+    console.error("Update error:", err);
     res.status(500).json({ error: "Update failed" });
   }
 });
-
-
 
 
 
