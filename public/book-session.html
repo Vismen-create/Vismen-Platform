@@ -229,42 +229,42 @@
   loadMentorDetails();
 
   async function bookSession() {
-    const date = document.querySelector(".time-slots button.active")?.textContent;
-    const topic = document.querySelector(".session-type button.active")?.textContent;
-    const payment = document.querySelector(".payment-options button.active")?.textContent;
-    const problem = document.getElementById("desc").value;
-    const time = date?.split("-")[1]?.trim();
-    const day = date?.split("-")[0]?.trim();
+  const date = document.querySelector(".time-slots button.active")?.textContent;
+  const topic = document.querySelector(".session-type button.active")?.textContent;
+  const payment = document.querySelector(".payment-options button.active")?.textContent;
+  const problem = document.getElementById("desc").value;
+  const time = date?.split("-")[1]?.trim();
+  const day = date?.split("-")[0]?.trim();
 
-    if (!date || !topic || !payment) {
-      alert("Please select all fields.");
-      return;
-    }
-
-    const res = await fetch('/book-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        menteeEmail,
-        mentorEmail,
-        mentorName,
-        date: day,
-        time,
-        topic,
-        payment,
-        problem,
-        status: 'upcoming'
-      })
-    });
-
-    const result = await res.json();
-    if (result.success) {
-      alert("✅ Session booked successfully!");
-      window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
-    } else {
-      alert("❌ Booking failed.");
-    }
+  if (!date || !topic || !payment) {
+    alert("Please select all fields.");
+    return;
   }
+
+  const res = await fetch('/book-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      menteeEmail,
+      mentorEmail,
+      mentorName: document.getElementById("mentorName").textContent,
+      date: day,
+      time,
+      topic,
+      payment,
+      problem,
+      status: 'upcoming'
+    })
+  });
+
+  const result = await res.json();
+  if (result.success) {
+    alert("✅ Session booked successfully!");
+    window.location.href = `mentee-dashboard.html?email=${menteeEmail}`;
+  } else {
+    alert("❌ Booking failed.");
+  }
+}
 </script>
 
 </body>
