@@ -176,31 +176,33 @@
   }
 
   const urlParams = new URLSearchParams(window.location.search);
-  const mentorEmail = urlParams.get('email');
-  let mentorName = "";
+  const mentorEmail = decodeURIComponent(urlParams.get('email')).trim(); // <- full decode + trim
+let mentorName = "";
 
-  async function loadMentorDetails() {
-    try {
-      const res = await fetch(`/get-mentor-data?email=${mentorEmail}`);
-      const mentor = await res.json();
+async function loadMentorDetails() {
+  try {
+    const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(mentorEmail)}`);
+    const mentor = await res.json();
 
-      if (mentor?.name) {
-        mentorName = mentor.name;
-        localStorage.setItem("mentorName", mentorName);
-
-        document.getElementById("mentorName").textContent = mentor.name;
-        document.getElementById("mentorNameRight").textContent = mentor.name;
-        document.getElementById("mentorTitle").textContent = mentor.title;
-        document.getElementById("mentorCompany").textContent = mentor.company;
-        document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
-      } else {
-        alert("Mentor not found or invalid data.");
-      }
-    } catch (err) {
-      console.error("Failed to fetch mentor details:", err);
-      alert("Error loading mentor details.");
+    if (!mentor || !mentor.name) {
+      alert("Mentor not found or invalid data.");
+      return;
     }
+
+    mentorName = mentor.name;
+    document.getElementById("mentorName").textContent = mentor.name;
+    document.getElementById("mentorNameRight").textContent = mentor.name;
+    document.getElementById("mentorTitle").textContent = mentor.title;
+    document.getElementById("mentorCompany").textContent = mentor.company;
+    document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
+
+    localStorage.setItem("mentorName", mentorName);
+    localStorage.setItem("mentorEmail", mentorEmail);
+  } catch (err) {
+    console.error("Error fetching mentor details:", err);
+    alert("Mentor not loaded.");
   }
+}
 
   async function bookSession() {
     if (!mentorName) {

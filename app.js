@@ -148,29 +148,29 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// ✅ Get Mentor Data by Email
 app.get('/get-mentor-data', async (req, res) => {
   try {
-    const mentor = await Mentor.findOne({ email: req.query.email });
-    if (!mentor) return res.status(404).json({ error: 'Mentor not found' });
+    const email = (req.query.email || '').trim();
+    if (!email) return res.status(400).json({ error: "Email is required" });
 
-    const sessions = await Session.find({ mentorName: mentor.name });
+    const mentor = await Mentor.findOne({ email });
+    if (!mentor) return res.status(404).json({ error: "Mentor not found" });
 
-    const response = {
-      fullname: mentor.name,
-      interests: mentor.title || '-',
-      experience: mentor.company || '-',
-      goals: mentor.tags?.join(', ') || '-',
-      sessions: sessions.length,
-      earnings: sessions.length * 1000, // Just for example
-      rating: 4.8 // Example value
-    };
-
-    res.json(response);
+    res.json({
+      name: mentor.name,
+      email: mentor.email,
+      title: mentor.title,
+      company: mentor.company,
+      image: mentor.image
+    });
   } catch (err) {
-    console.error("❌ Error fetching mentor data:", err);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error fetching mentor:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
+
+
 
 
 // ✅ Get Mentee by Email
