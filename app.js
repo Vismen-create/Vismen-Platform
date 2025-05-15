@@ -247,6 +247,23 @@ app.get('/mentor-sessions', async (req, res) => {
 });
 
 
+// Get mentor profile by email
+app.get('/get-mentor-profile', async (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  try {
+    const mentor = await Mentor.findOne({ email });
+    if (!mentor) return res.status(404).json({ error: 'Mentor not found' });
+
+    res.json(mentor);
+  } catch (err) {
+    console.error("Error fetching mentor profile:", err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 
 
 

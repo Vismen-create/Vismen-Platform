@@ -156,9 +156,9 @@
 
     <div class="profile-section">
       <div class="profile-pic">
-        <img src="Mentor1.jpg" alt="Profile Photo" />
+        <img id="mentorImage" src="/Mentor1.jpg" alt="Profile Photo" />
         <div>
-          <h3>Raj K.</h3>
+          <h3 id="mentorName">Mentor</h3>
           <p class="verified">✔ Verified</p>
         </div>
       </div>
@@ -166,22 +166,22 @@
       <div class="profile-row">
         <div>
           <strong>Full Name</strong>
-          <p>Raj K</p>
+          <p id="fullName">-</p>
         </div>
         <div>
           <strong>Email</strong>
-          <p>raj.k@example.com</p>
+          <p id="email">-</p>
         </div>
       </div>
 
       <div class="profile-row">
         <div>
           <strong>Phone</strong>
-          <p>*1234</p>
+          <p id="phone">-</p>
         </div>
         <div>
           <strong>Languages</strong>
-          <p>English, Hindi</p>
+          <p id="languages">-</p>
         </div>
       </div>
 
@@ -189,31 +189,32 @@
       <div class="profile-row">
         <div>
           <strong>Expertise Areas</strong>
-          <p>React, Python, Selenium, AWS</p>
+          <p id="skills">-</p>
         </div>
         <div>
           <strong>Experience</strong>
-          <p>5+ Years</p>
+          <p id="experience">-</p>
         </div>
       </div>
+
       <div>
         <strong>Bio</strong>
-        <p>Passionate mentor helping 1000+ students land their dream IT jobs.</p>
+        <p id="bio">-</p>
       </div>
       <div style="margin-top: 10px;">
         <strong>Resume / CV</strong>
-        <p class="download-link">Download New</p>
+        <a id="resume" class="download-link" href="#" target="_blank">Download</a>
       </div>
 
       <div class="section-title">Security</div>
       <div class="profile-row">
         <div>
           <strong>Payout Account</strong>
-          <p>Bank Account / UPI ID --7890</p>
+          <p id="payout">-</p>
         </div>
         <div>
           <strong>Payout Frequency</strong>
-          <p>Weekly</p>
+          <p id="payoutFrequency">-</p>
         </div>
       </div>
 
@@ -235,5 +236,44 @@
       © 2025 VisMen IT Solutions. All rights reserved.
     </footer>
   </div>
+
+  <script>
+    const email = localStorage.getItem('email');
+    if (!email) {
+      alert("Please log in first.");
+      window.location.href = "/login.html";
+    }
+
+    async function loadMentorProfile() {
+      try {
+        const res = await fetch(`/get-mentor-profile?email=${email}`);
+        const data = await res.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        // Populate all fields
+        document.getElementById("mentorImage").src = data.image || "/Mentor1.jpg";
+        document.getElementById("mentorName").textContent = data.name || "Mentor";
+        document.getElementById("fullName").textContent = data.name || "-";
+        document.getElementById("email").textContent = data.email || "-";
+        document.getElementById("phone").textContent = data.phone || "*XXXX";
+        document.getElementById("languages").textContent = data.languages || "-";
+        document.getElementById("skills").textContent = data.skills || "-";
+        document.getElementById("experience").textContent = data.experience || "-";
+        document.getElementById("bio").textContent = data.bio || "-";
+        document.getElementById("resume").href = data.resume || "#";
+        document.getElementById("payout").textContent = data.payout || "-";
+        document.getElementById("payoutFrequency").textContent = data.payoutFrequency || "Monthly";
+      } catch (err) {
+        console.error("Error loading mentor profile:", err);
+        alert("Failed to load profile.");
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadMentorProfile);
+  </script>
 </body>
 </html>
