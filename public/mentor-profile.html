@@ -273,19 +273,26 @@
   </div>
 
   <div class="modal" id="editModal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeEditModal()">&times;</span>
-      <h3>Edit Mentor Profile</h3>
-      <input type="text" id="inputPhone" placeholder="Phone" />
-      <input type="text" id="inputLanguages" placeholder="Languages" />
-      <input type="text" id="inputExpertise" placeholder="Expertise Areas" />
-      <input type="text" id="inputExperience" placeholder="Experience" />
-      <textarea id="inputBio" placeholder="Bio"></textarea>
-      <input type="text" id="inputPayout" placeholder="Payout Account" />
-      <input type="text" id="inputFrequency" placeholder="Payout Frequency" />
-      <button onclick="saveProfile()">Save</button>
-    </div>
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeEditModal()">&times;</span>
+    <h3>Edit Mentor Profile</h3>
+
+    <input type="text" id="inputPhone" placeholder="Phone" />
+    <input type="text" id="inputLanguages" placeholder="Languages" />
+    <input type="text" id="inputExpertise" placeholder="Expertise Areas" />
+    <input type="text" id="inputExperience" placeholder="Experience" />
+    <textarea id="inputBio" placeholder="Bio"></textarea>
+    <input type="text" id="inputPayout" placeholder="Payout Account" />
+    <input type="text" id="inputFrequency" placeholder="Payout Frequency" />
+
+    <!-- 🔥 New input for available slots -->
+    <label for="inputSlots">Available Slots (comma-separated)</label>
+    <textarea id="inputSlots" placeholder="E.g. Mon 7:00 PM, Wed 9:30 AM, Sat 8:00 PM" rows="3"></textarea>
+
+    <button onclick="saveProfile()">Save</button>
   </div>
+</div>
+
 
   <script>
     const email = localStorage.getItem('email');
@@ -324,6 +331,9 @@
         document.getElementById("inputBio").value = data.bio || "";
         document.getElementById("inputPayout").value = data.payout || "";
         document.getElementById("inputFrequency").value = data.payoutFrequency || "";
+        document.getElementById("inputSlots").value = (data.slots || []).join(", ");
+
+
       } catch (err) {
         console.error("Error loading mentor profile:", err);
         alert("Failed to load profile.");
@@ -349,7 +359,8 @@ async function saveProfile() {
       bio: document.getElementById("inputBio").value,
       resume: document.getElementById("resume")?.href || "",
       payout: document.getElementById("inputPayout").value,
-      payoutFrequency: document.getElementById("inputFrequency").value
+      payoutFrequency: document.getElementById("inputFrequency").value,
+      slots: document.getElementById("inputSlots").value,
     };
 
     try {

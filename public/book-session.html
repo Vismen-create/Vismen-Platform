@@ -50,7 +50,7 @@
       border: 1px solid #ccc;
       font-size: 1rem;
     }
-    .time-slots button,
+    .slot-buttons button,
     .session-type button,
     .payment-options button {
       margin: 8px 5px;
@@ -60,7 +60,9 @@
       background-color: #fff;
       cursor: pointer;
     }
-    .active {
+    .slot-buttons button.selected,
+    .session-type button.active,
+    .payment-options button.active {
       background-color: #3b82f6;
       color: white;
       border-color: #3b82f6;
@@ -115,12 +117,8 @@
     <div class="left">
       <h2>Book a Session with <span id="mentorName">Mentor</span></h2>
 
-      <label>Pick a Date & Time</label>
-      <div class="time-slots">
-        <button>Thu 25 - 7:00 PM</button>
-        <button>Fri 26 - 9:30 PM</button>
-        <button>Sat 27 - 8:00 PM</button>
-      </div>
+      <label>Pick a Slot</label>
+      <div id="slotContainer" class="slot-buttons"></div>
 
       <label>Select Session Type</label>
       <div class="session-type">
@@ -160,6 +158,63 @@
   </div>
 
 <script>
+  const menteeEmail = localStorage.getItem('menteeEmail');
+  if (!menteeEmail) {
+    alert("Please log in as a mentee to continue.");
+    window.location.href = "/login.html";
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const mentorEmail = decodeURIComponent(urlParams.get('email')).trim();
+  let mentorName = "";
+  let selectedSlot = "";
+
+  async function loadMentorDetails() {
+    try {
+      const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(mentorEmail)}`);
+      const mentor = await res.json();
+
+      if (!mentor || !mentor.name) {
+        alert("Mentor not found or invalid data.");
+        return;
+      }
+
+      mentorName = mentor.name;
+      document.getElementById("mentorName").textContent = mentor.name;
+      document.getElementById("mentorNameRight").textContent = mentor.name;
+      document.getElementById("mentorTitle").textContent = mentor.title;
+      document.getElementById("mentorCompany").textContent = mentor.company;
+      document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
+
+      localStorage.setItem("mentorName", mentorName);
+      localStorage.setItem("mentorEmail", mentorEmail);
+
+      loadSlots(mentor.slots);
+    } catch (err) {
+      console.error("Error fetching mentor details:", err);
+      alert("Mentor not loaded.");
+    }
+  }
+
+  function loadSlots(slots = []) {
+    const container = document.getElementById("slotContainer");
+    container.innerHTML = "";
+    if (!slots.length) {
+      container.innerHTML = "<p>No slots available.</p>";
+      return;
+    }
+    slots.forEach(slot => {
+      const btn = document.createElement("button");
+      btn.textContent = slot;
+      btn.onclick = () => {
+        document.querySelectorAll("#slotContainer button").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedSlot = slot;
+      };
+      container.appendChild(btn);
+    });
+  }
+
   function setupToggle(selector) {
     document.querySelectorAll(selector).forEach(button => {
       button.addEventListener('click', () => {
@@ -169,58 +224,21 @@
     });
   }
 
-  const menteeEmail = localStorage.getItem('menteeEmail');
-  if (!menteeEmail) {
-    alert("Please log in as a mentee to continue.");
-    window.location.href = "/login.html";
-  }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const mentorEmail = decodeURIComponent(urlParams.get('email')).trim(); // <- full decode + trim
-let mentorName = "";
-
-async function loadMentorDetails() {
-  try {
-    const res = await fetch(`/get-mentor-data?email=${encodeURIComponent(mentorEmail)}`);
-    const mentor = await res.json();
-
-    if (!mentor || !mentor.name) {
-      alert("Mentor not found or invalid data.");
-      return;
-    }
-
-    mentorName = mentor.name;
-    document.getElementById("mentorName").textContent = mentor.name;
-    document.getElementById("mentorNameRight").textContent = mentor.name;
-    document.getElementById("mentorTitle").textContent = mentor.title;
-    document.getElementById("mentorCompany").textContent = mentor.company;
-    document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
-
-    localStorage.setItem("mentorName", mentorName);
-    localStorage.setItem("mentorEmail", mentorEmail);
-  } catch (err) {
-    console.error("Error fetching mentor details:", err);
-    alert("Mentor not loaded.");
-  }
-}
-
   async function bookSession() {
-    if (!mentorName) {
-      alert("Mentor name not loaded. Please wait a moment and try again.");
+    if (!mentorName || !selectedSlot) {
+      alert("Please select a mentor slot.");
       return;
     }
-
-    const date = document.querySelector(".time-slots button.active")?.textContent;
     const topic = document.querySelector(".session-type button.active")?.textContent;
     const payment = document.querySelector(".payment-options button.active")?.textContent;
     const problem = document.getElementById("desc").value;
-    const time = date?.split("-")[1]?.trim();
-    const day = date?.split("-")[0]?.trim();
 
-    if (!date || !topic || !payment) {
-      alert("Please select all fields.");
+    if (!topic || !payment) {
+      alert("Please complete all selections.");
       return;
     }
+
+    const [date, time] = selectedSlot.split(" - ").map(s => s.trim());
 
     const res = await fetch('/book-session', {
       method: 'POST',
@@ -229,7 +247,7 @@ async function loadMentorDetails() {
         menteeEmail,
         mentorEmail,
         mentorName,
-        date: day,
+        date,
         time,
         topic,
         payment,
@@ -247,13 +265,11 @@ async function loadMentorDetails() {
     }
   }
 
-  window.addEventListener('DOMContentLoaded', async () => {
-    setupToggle('.time-slots button');
+  window.addEventListener("DOMContentLoaded", async () => {
     setupToggle('.session-type button');
     setupToggle('.payment-options button');
     await loadMentorDetails();
   });
 </script>
-
 </body>
 </html>
