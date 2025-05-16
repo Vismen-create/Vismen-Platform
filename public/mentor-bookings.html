@@ -90,42 +90,8 @@
   </div>
 
   <script>
-const mentorName = localStorage.getItem("mentorName"); // set this during login
-
-async function loadMentorSessions() {
-  const tableBody = document.querySelector("tbody");
-  tableBody.innerHTML = `<tr><td colspan="5">Loading sessions...</td></tr>`;
-
-  try {
-    const res = await fetch(`/get-sessions-by-mentor?mentorName=${mentorName}`);
-    const sessions = await res.json();
-
-    if (!Array.isArray(sessions)) throw new Error("Invalid data");
-
-    if (sessions.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="5">No sessions found.</td></tr>`;
-      return;
-    }
-
-    tableBody.innerHTML = "";
-
-    sessions.forEach(session => {
-      tableBody.innerHTML += `
-        <tr>
-          <td>${session.date}, ${session.time}</td>
-          <td>${session.menteeEmail}</td>
-          <td>${session.topic}</td>
-          <td><span class="${getStatusClass(session.status)}">${getMeetingLabel(session.status)}</span></td>
-          <td>${getStatusAction(session.status)}</td>
-        </tr>
-      `;
-    });
-
-  } catch (err) {
-    console.error("Error:", err);
-    tableBody.innerHTML = `<tr><td colspan="5">Failed to load sessions</td></tr>`;
-  }
-}
+const mentorName = localStorage.getItem("mentorName"); // set during login
+let allSessions = [];
 
 function getStatusClass(status) {
   if (status === "upcoming") return "status-join";
@@ -148,8 +114,69 @@ function getStatusAction(status) {
   return "-";
 }
 
-window.addEventListener("DOMContentLoaded", loadMentorSessions);
+function renderSessions(filter = "Today") {
+  const tableBody = document.querySelector("tbody");
+  tableBody.innerHTML = "";
+
+  const todayDate = new Date().toDateString();
+  let filteredSessions = [];
+
+  if (filter === "Today") {
+    filteredSessions = allSessions.filter(s => new Date(`${s.date} ${s.time}`).toDateString() === todayDate);
+  } else {
+    filteredSessions = allSessions.filter(s => s.status === filter.toLowerCase());
+  }
+
+  if (filteredSessions.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="5">No sessions found.</td></tr>`;
+    return;
+  }
+
+  filteredSessions.forEach(session => {
+    tableBody.innerHTML += `
+      <tr>
+        <td>${session.date}, ${session.time}</td>
+        <td>${session.menteeEmail}</td>
+        <td>${session.topic}</td>
+        <td><span class="${getStatusClass(session.status)}">${getMeetingLabel(session.status)}</span></td>
+        <td>${getStatusAction(session.status)}</td>
+      </tr>
+    `;
+  });
+}
+
+async function loadMentorSessions() {
+  const tableBody = document.querySelector("tbody");
+  tableBody.innerHTML = `<tr><td colspan="5">Loading sessions...</td></tr>`;
+
+  try {
+    const res = await fetch(`/get-sessions-by-mentor?mentorName=${mentorName}`);
+    const sessions = await res.json();
+
+    if (!Array.isArray(sessions)) throw new Error("Invalid data");
+
+    allSessions = sessions;
+    renderSessions("Today"); // default tab
+
+  } catch (err) {
+    console.error("Error:", err);
+    tableBody.innerHTML = `<tr><td colspan="5">Failed to load sessions</td></tr>`;
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadMentorSessions();
+
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelector(".tab.active").classList.remove("active");
+      tab.classList.add("active");
+      renderSessions(tab.textContent);
+    });
+  });
+});
 </script>
+
 
 </body>
 </html>
