@@ -337,39 +337,46 @@
     function closeEditModal() {
       document.getElementById('editModal').style.display = 'none';
     }
+async function saveProfile() {
+    const email = localStorage.getItem('email');
 
-    async function saveProfile() {
-      const body = {
-        email,
-        phone: document.getElementById("inputPhone").value,
-        languages: document.getElementById("inputLanguages").value,
-        skills: document.getElementById("inputExpertise").value,
-        experience: document.getElementById("inputExperience").value,
-        bio: document.getElementById("inputBio").value,
-         resume: "https://vismen-resume-default-link",
-        payout: document.getElementById("inputPayout").value,
-        payoutFrequency: document.getElementById("inputFrequency").value
-      };
+    const payload = {
+      email,
+      phone: document.getElementById("inputPhone").value,
+      languages: document.getElementById("inputLanguages").value,
+      skills: document.getElementById("inputExpertise").value,
+      experience: document.getElementById("inputExperience").value,
+      bio: document.getElementById("inputBio").value,
+      resume: document.getElementById("resume")?.href || "",
+      payout: document.getElementById("inputPayout").value,
+      payoutFrequency: document.getElementById("inputFrequency").value
+    };
 
-      try {
-        const res = await fetch('/update-mentor-profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        const result = await res.json();
-        if (result.success) {
-          alert("✅ Profile updated successfully!");
-          closeEditModal();
-          loadMentorProfile();
-        } else {
-          alert("❌ Update failed.");
-        }
-      } catch (err) {
-        console.error("Error updating profile:", err);
-        alert("Server error");
+    try {
+      const res = await fetch("/update-mentor-profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json(); // await must come before checking .ok
+
+      if (!res.ok) {
+        alert("❌ " + (data.error || "Update failed"));
+        return;
       }
+
+      alert("✅ " + data.message);
+      document.getElementById("editModal").style.display = "none";
+      loadMentorProfile();
+
+    } catch (err) {
+      console.error("Frontend error:", err);
+      alert("❌ Something went wrong");
     }
+  }
 
     window.addEventListener('DOMContentLoaded', loadMentorProfile);
   </script>
