@@ -265,19 +265,21 @@ app.get('/get-mentor-profile', async (req, res) => {
 
 app.post("/update-mentor-profile", async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ error: "Email is required" });
+    const { email, phone, languages, skills, experience, bio, resume, payout, payoutFrequency } = req.body;
 
-    const updateFields = {
-      phone: req.body.phone,
-      languages: req.body.languages,
-      skills: req.body.skills,
-      experience: req.body.experience,
-      bio: req.body.bio,
-      resume: req.body.resume,
-      payout: req.body.payout,
-      payoutFrequency: req.body.payoutFrequency,
-    };
+if (!email) return res.status(400).json({ error: "Email is required" });
+
+const updateFields = {
+  phone,
+  languages,
+  skills,
+  experience,
+  bio,
+  resume,
+  payout,
+  payoutFrequency,
+};
+
 
     const updated = await Mentor.findOneAndUpdate({ email }, updateFields, { new: true });
 
