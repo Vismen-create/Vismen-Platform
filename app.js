@@ -305,6 +305,20 @@ app.post("/update-mentor-profile", async (req, res) => {
   }
 });
 
+//sessions by mentor email
+app.get('/get-sessions-by-mentor', async (req, res) => {
+  try {
+    const { mentorName } = req.query;
+    if (!mentorName) return res.status(400).json({ error: 'Mentor name required' });
+
+    const sessions = await Session.find({ mentorName });
+
+    res.json(sessions);
+  } catch (err) {
+    console.error("Error fetching sessions:", err);
+    res.status(500).json({ error: 'Failed to fetch sessions' });
+  }
+});
 
 
 // ✅ Start server
