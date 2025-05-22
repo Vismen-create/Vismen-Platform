@@ -18,7 +18,9 @@ const MentorSchema = new mongoose.Schema({
   slots: [String], // e.g., ["Mon 7:00 PM", "Wed 8:30 PM", "Sat 9:00 AM"]
   resume: String,
   payout: String,
-  payoutFrequency: String
+  payoutFrequency: String,
+  availableSlots: [String],
+
 });
 
 module.exports = mongoose.model("Mentor", MentorSchema);

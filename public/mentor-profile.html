@@ -360,8 +360,7 @@ async function saveProfile() {
       resume: document.getElementById("resume")?.href || "",
       payout: document.getElementById("inputPayout").value,
       payoutFrequency: document.getElementById("inputFrequency").value,
-      slots: document.getElementById("inputSlots").value,
-    };
+ availableSlots: document.getElementById("inputSlots").value.split(",").map(s => s.trim())    };
 
     try {
       const res = await fetch("/update-mentor-profile", {
