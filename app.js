@@ -268,7 +268,7 @@ app.post("/update-mentor-profile", async (req, res) => {
     const {
       email, phone, languages, skills,
       experience, bio, resume,
-      payout, payoutFrequency
+      payout, payoutFrequency, availableSlots
     } = req.body;
 
     if (!email) return res.status(400).json({ error: "Email is required" });
@@ -281,7 +281,8 @@ app.post("/update-mentor-profile", async (req, res) => {
       bio,
       resume,
       payout,
-      payoutFrequency
+      payoutFrequency,
+      availableSlots
     };
 
     const updated = await Mentor.findOneAndUpdate(

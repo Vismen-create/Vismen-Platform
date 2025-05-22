@@ -331,7 +331,7 @@
         document.getElementById("inputBio").value = data.bio || "";
         document.getElementById("inputPayout").value = data.payout || "";
         document.getElementById("inputFrequency").value = data.payoutFrequency || "";
-        document.getElementById("inputSlots").value = (data.slots || []).join(", ");
+        document.getElementById("inputSlots").value = (data.availableSlots || []).join(", ");
 
 
       } catch (err) {
