@@ -186,6 +186,10 @@
       document.getElementById("mentorCompany").textContent = mentor.company;
       document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
 
+       // Save for reuse
+    localStorage.setItem("mentorName", mentorName);
+    localStorage.setItem("mentorEmail", mentorEmail);
+
       const slotContainer = document.querySelector(".time-slots");
     slotContainer.innerHTML = "";
     if (Array.isArray(mentor.availableSlots) && mentor.availableSlots.length > 0) {
@@ -202,10 +206,10 @@
       slotContainer.innerHTML = "<p>No slots available.</p>";
     }
 
-      localStorage.setItem("mentorName", mentorName);
-      localStorage.setItem("mentorEmail", mentorEmail);
+      // localStorage.setItem("mentorName", mentorName);
+      // localStorage.setItem("mentorEmail", mentorEmail);
 
-      loadSlots(mentor.slots);
+      // loadSlots(mentor.slots);
     } catch (err) {
       console.error("Error fetching mentor details:", err);
       alert("Mentor not loaded.");
@@ -254,7 +258,8 @@
       return;
     }
 
-    const [date, time] = selectedSlot.split(" - ").map(s => s.trim());
+const [day, time] = dateSlot.split(/ (.+)/); // Split on first space
+
 
     const res = await fetch('/book-session', {
       method: 'POST',
