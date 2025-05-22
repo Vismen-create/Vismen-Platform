@@ -186,6 +186,22 @@
       document.getElementById("mentorCompany").textContent = mentor.company;
       document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
 
+      const slotContainer = document.querySelector(".time-slots");
+    slotContainer.innerHTML = "";
+    if (Array.isArray(mentor.availableSlots) && mentor.availableSlots.length > 0) {
+      mentor.availableSlots.forEach(slot => {
+        const btn = document.createElement("button");
+        btn.textContent = slot;
+        btn.addEventListener('click', () => {
+          document.querySelectorAll(".time-slots button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+        slotContainer.appendChild(btn);
+      });
+    } else {
+      slotContainer.innerHTML = "<p>No slots available.</p>";
+    }
+
       localStorage.setItem("mentorName", mentorName);
       localStorage.setItem("mentorEmail", mentorEmail);
 
