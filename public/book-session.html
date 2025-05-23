@@ -186,28 +186,26 @@
       document.getElementById("mentorCompany").textContent = mentor.company;
       document.getElementById("mentorImage").src = mentor.image || '/Mentor1.jpg';
 
-       // Save for reuse
-    localStorage.setItem("mentorName", mentorName);
-    localStorage.setItem("mentorEmail", mentorEmail);
+      localStorage.setItem("mentorName", mentorName);
+      localStorage.setItem("mentorEmail", mentorEmail);
 
-const slotContainer = document.getElementById("slotContainer");
-    slotContainer.innerHTML = "";
-    if (Array.isArray(mentor.availableSlots) && mentor.availableSlots.length > 0) {
-      mentor.availableSlots.forEach(slot => {
-        const btn = document.createElement("button");
-        btn.textContent = slot;
-        btn.addEventListener('click', () => {
-          document.querySelectorAll(".time-slots button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          selectedSlot = slot; 
+      const slotContainer = document.getElementById("slotContainer");
+      slotContainer.innerHTML = "";
+      if (Array.isArray(mentor.availableSlots) && mentor.availableSlots.length > 0) {
+        mentor.availableSlots.forEach(slot => {
+          const btn = document.createElement("button");
+          btn.textContent = slot;
+          btn.addEventListener('click', () => {
+            document.querySelectorAll("#slotContainer button").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            selectedSlot = slot;
+          });
+          slotContainer.appendChild(btn);
         });
-        slotContainer.appendChild(btn);
-      });
-    } else {
-      slotContainer.innerHTML = "<p>No slots available.</p>";
-    }
+      } else {
+        slotContainer.innerHTML = "<p>No slots available.</p>";
+      }
 
-      
     } catch (err) {
       console.error("Error fetching mentor details:", err);
       alert("Mentor not loaded.");
@@ -256,8 +254,7 @@ const slotContainer = document.getElementById("slotContainer");
       return;
     }
 
-const [day, time] = dateSlot.split(/ (.+)/); // Split on first space
-
+    const [day, time] = selectedSlot.split(/ (.+)/);
 
     const res = await fetch('/book-session', {
       method: 'POST',
@@ -266,7 +263,7 @@ const [day, time] = dateSlot.split(/ (.+)/); // Split on first space
         menteeEmail,
         mentorEmail,
         mentorName,
-        date,
+        date: day,
         time,
         topic,
         payment,
