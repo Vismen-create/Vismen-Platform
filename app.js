@@ -154,7 +154,7 @@ app.get('/get-mentor-data', async (req, res) => {
     const email = (req.query.email || '').trim();
     if (!email) return res.status(400).json({ error: "Email is required" });
 
-    const mentor = await Mentor.findOne({ email });
+    const mentor = await Mentor.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
     if (!mentor) return res.status(404).json({ error: "Mentor not found" });
 
     res.json({
@@ -162,7 +162,8 @@ app.get('/get-mentor-data', async (req, res) => {
       email: mentor.email,
       title: mentor.title,
       company: mentor.company,
-      image: mentor.image
+      image: mentor.image,
+      availableSlots: mentor.availableSlots
     });
   } catch (err) {
     console.error("Error fetching mentor:", err);
