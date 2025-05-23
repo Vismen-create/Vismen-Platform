@@ -199,6 +199,7 @@ const slotContainer = document.getElementById("slotContainer");
         btn.addEventListener('click', () => {
           document.querySelectorAll(".time-slots button").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
+          selectedSlot = slot; 
         });
         slotContainer.appendChild(btn);
       });
