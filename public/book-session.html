@@ -190,7 +190,7 @@
     localStorage.setItem("mentorName", mentorName);
     localStorage.setItem("mentorEmail", mentorEmail);
 
-      const slotContainer = document.querySelector(".time-slots");
+const slotContainer = document.getElementById("slotContainer");
     slotContainer.innerHTML = "";
     if (Array.isArray(mentor.availableSlots) && mentor.availableSlots.length > 0) {
       mentor.availableSlots.forEach(slot => {
