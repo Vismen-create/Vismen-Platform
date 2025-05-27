@@ -50,6 +50,10 @@ app.post("/api/mentors", upload.single("image"), async (req, res) => {
   try {
     const { name, title, company, tags, email, password } = req.body;
 
+    if (!req.file) {
+      return res.status(400).json({ error: "Image upload failed." });
+    }
+
     const newMentor = new Mentor({
       name,
       title,
@@ -57,16 +61,18 @@ app.post("/api/mentors", upload.single("image"), async (req, res) => {
       tags: tags.split(",").map(t => t.trim()),
       email,
       password,
-      image: `/uploads/${req.file.filename}`,  // image path to save
+      image: `/uploads/${req.file.filename}` // This is now valid
     });
 
     await newMentor.save();
     res.status(201).json({ message: "Mentor registered successfully." });
+
   } catch (err) {
     console.error("❌ Error saving mentor:", err);
     res.status(500).json({ error: "Server error while saving mentor." });
   }
 });
+
 
 
 
