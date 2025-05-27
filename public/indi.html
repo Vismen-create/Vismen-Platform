@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VisMen - Mentor Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ... (all your existing styles remain untouched) ... */
+
+    .hero {
+      text-align: center;
+      background: url('world-map.png') no-repeat center center;
+      background-size: cover;
+      color: white;
+      padding: 160px 20px 120px;
+      position: relative;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero span {
+      color: #f97316;
+      text-decoration: underline;
+    }
+
+    .search-bar {
+      margin: 30px auto 0;
+      display: flex;
+      max-width: 700px;
+      border-radius: 9999px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 18px 25px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .search-bar button {
+      background-color: #f97316;
+      color: white;
+      padding: 0 25px;
+      font-size: 1.3rem;
+      border: none;
+    }
+
+    .map-section {
+      display: none; /* hidden since now the image is set as hero background */
+    }
+
+    /* ... (rest of your CSS continues unchanged) ... */
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo" style="text-decoration: none;">VISMEN</a>
+    <nav>
+      <a href="browse-mentors.html">Browse All Mentors</a>
+      <a href="#">Membership</a>
+      <a href="https://www.vismen.com/MentorSignup.html">Become a Mentor</a>
+    </nav>
+    <div id="authSection"></div>
+  </header>
+
+  <section class="hero">
+    <h1>Master New Skills with our <span>Expert Mentor</span></h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Search by company, Skills or role...">
+      <button>→</button>
+    </div>
+  </section>
+
+  <div class="map-section">
+    <img src="world-map.png" alt="World Map">
+  </div>
+
+  <!-- ... (rest of your HTML remains the same from here on) ... -->
+</body>
+</html>

@@ -24,7 +24,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px 60px;
-      background: linear-gradient(to right, #6b21a8, #2563eb);
+      background-color: #0745a0;
       color: white;
     }
 
@@ -53,26 +53,45 @@
       border: none;
     }
 
-    .hero {
+  .hero {
+      position: relative;
+      height: 100vh;
+      background: url('world-map.png') no-repeat center center/cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      background: linear-gradient(to right, #6b21a8, #2563eb);
-      color: white;
-      padding: 100px 20px 80px;
     }
 
-    .hero h1 {
+    .hero img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .hero-text {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      width: 100%;
+      padding: 0 20px;
+    }
+
+    .hero-text h1 {
       font-size: 2.8rem;
       font-weight: 700;
       margin-bottom: 20px;
+      color: white;
+      text-shadow: 0 3px 6px rgba(0,0,0,0.3);
     }
 
-    .hero span {
-      color: #f97316;
-      text-decoration: underline;
+    .hero-text span {
+      color: #fbbf24;
     }
 
     .search-bar {
-      margin: 30px auto 0;
+      margin: 20px auto 0;
       display: flex;
       max-width: 700px;
       border-radius: 9999px;
@@ -94,17 +113,8 @@
       font-size: 1.3rem;
       border: none;
     }
-
     .map-section {
-      max-width: 1000px;
-      margin: 50px auto 30px;
-      text-align: center;
-    }
-
-    .map-section img {
-      width: 100%;
-      max-width: 900px;
-      border-radius: 20px;
+      display: none; /* hidden since now the image is set as hero background */
     }
 
     .brands {
@@ -1016,15 +1026,15 @@
   </header>
 
   <section class="hero">
-    <h1>Master New Skills with our <span>Expert Mentor</span></h1>
-    <div class="search-bar">
+    <!-- <h1>Master New Skills with our <span>Expert Mentor</span></h1> -->
+    <!-- <div class="search-bar">
       <input type="text" placeholder="Search by company, Skills or role...">
       <button>→</button>
-    </div>
+    </div> -->
   </section>
 
   <div class="map-section">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution_gray-blue.svg" alt="World Map">
+    <img src="world-map.png" alt="World Map">
   </div>
 
   <div class="brands">
