@@ -175,6 +175,57 @@
       font-weight: bold;
       color: white;
     }
+
+
+    .mentor-cards {
+    padding: 60px 20px;
+    background: #f9fafb;
+    text-align: center;
+  }
+
+  .mentor-cards h2 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+  .mentor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+
+  .mentor-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .mentor-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .mentor-title {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin: 10px 0;
+  }
+
+  .mentor-tags .tag {
+    display: inline-block;
+    background: #e5e7eb;
+    padding: 5px 10px;
+    margin: 4px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: #1f2937;
+  }
    
     footer {
       background-color: #0f172a;
@@ -219,7 +270,60 @@
       margin-right: 10px;
     }
 
-    .category-section {
+
+    .mentor-gallery {
+  text-align: center;
+  padding: 80px 20px;
+  background: #fefefe;
+}
+.mentor-gallery h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+.mentor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+.mentor-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  padding: 20px;
+}
+.mentor-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.mentor-card h4 {
+  margin: 12px 0 8px;
+  font-size: 1rem;
+}
+.skills span {
+  background: #f3f4f6;
+  padding: 5px 10px;
+  border-radius: 999px;
+  margin: 4px;
+  display: inline-block;
+  font-size: 0.8rem;
+}
+.view-btn {
+  margin-top: 12px;
+  display: inline-block;
+  padding: 10px 18px;
+  background: #f97316;
+  color: white;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+    /* .category-section {
       background: linear-gradient(to right, #0f4d6d, #043047);
       color: white;
       padding: 60px 20px;
@@ -239,7 +343,7 @@
     .category-section h2 {
       margin-top: 8px;
       font-size: 2rem;
-    }
+    } */
 
     .tag-container {
       margin-top: 30px;
@@ -1046,8 +1150,8 @@
   <section class="how-it-works-section">
     <div class="how-it-left">
       <p class="subtitle">HOW IT WORK</p>
-      <h2 class="title">A New Different Way<br/>To Improve Your Skills.</h2>
-      <p class="desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has.</p>
+      <h2 class="title">A Smarter Way to Grow<br/>Your Tech Career.</h2>
+      <p class="desc">Get matched with experienced mentors to solve coding issues, prepare for interviews, and build real-world projects. Learn faster with personalized sessions, actionable feedback, and practical guidance.</p>
       <button class="signup-btn">Sign Up →</button>
     </div>
     <div class="how-it-steps">
@@ -1058,21 +1162,21 @@
       <div class="step step-1">
         <img src="https://cdn-icons-png.flaticon.com/512/1159/1159633.png" alt="Customized" />
         <h4>Customized</h4>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        <p>Get tailored mentorship based on your tech stack, career goals, and current challenges.</p>
         <span class="number">1</span>
       </div>
   
       <div class="step step-2">
         <img src="https://cdn-icons-png.flaticon.com/512/4221/4221390.png" alt="Interactive Lessons" />
         <h4>Interactive Lessons</h4>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        <p>Attend live sessions, get your doubts cleared instantly, and receive task-based learning support.</p>
         <span class="number">2</span>
       </div>
   
       <div class="step step-3">
         <img src="https://cdn-icons-png.flaticon.com/512/5525/5525922.png" alt="Expert Tutors" />
         <h4>Expert Tutors</h4>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        <p>Connect with industry experts working in top companies like Amazon, Microsoft, and TCS.</p>
         <span class="number">3</span>
       </div>
     </div>
@@ -1098,46 +1202,47 @@
   <section class="help-section">
     <div class="help-container">
       <h3>WHAT WE HELP WITH</h3>
-      <h2>Real Skills for Real Problems</h2>
-      <p>We guide you through practical challenges like debugging, deployment, interview prep, and real-time project guidance.</p>
+      <h2>Solutions That Boost Your Tech Journey</h2>
+      <p>We support you through real challenges—be it debugging, deployment, interview preparation, or building production-ready applications with expert guidance.</p>
   
       <div class="help-tags">
-        <div class="help-tag">Mock Interviews</div>
-        <div class="help-tag">Debugging Issues</div>
-        <div class="help-tag">Deployment</div>
-        <div class="help-tag">Live Projects</div>
-        <div class="help-tag">CI/CD Support</div>
-        <div class="help-tag">Resume Reviews</div>
-        <div class="help-tag">Version Control</div>
-        <div class="help-tag">Tech Stack Suggestions</div>
-        <div class="help-tag">API Integration</div>
-        <div class="help-tag">System Design</div>
+  <div class="help-tag">Mock Interviews (MNC & Startup)</div>
+  <div class="help-tag">Live Debugging Help</div>
+  <div class="help-tag">Project Deployment (AWS/GCP)</div>
+  <div class="help-tag">Real-Time Project Guidance</div>
+  <div class="help-tag">CI/CD Pipeline Setup</div>
+  <div class="help-tag">Resume & Portfolio Review</div>
+  <div class="help-tag">Git & Version Control</div>
+  <div class="help-tag">Tech Stack Suggestions</div>
+  <div class="help-tag">API Testing & Integration</div>
+  <div class="help-tag">System Design for Interviews</div>
+</div>
+    </div>
+  </section>
+
+
+ <section class="mentor-cards">
+  <h2>Meet Our Top Mentors</h2>
+  <div id="mentorContainer" class="mentor-grid"></div>
+</section>
+
+    <div class="mentor-grid">
+    <div class="mentor-card">
+      <img src="mentors/mentor1.jpg" alt="Mentor Name" />
+      <h4>Software Engineer at eBay</h4>
+      <div class="skills">
+        <span>JavaScript</span>
+        <span>Typescript</span>
+        <span>Angular</span>
       </div>
+      <a href="mentor-profile.html?id=123" class="view-btn">View</a>
     </div>
-  </section>
+    <!-- Repeat for other mentors -->
+  </div>
+</section>
 
 
-  <section class="category-section">
-    <small>SIMPLY DUMMY TEXT</small>
-    <h2>Choose A Mentor Category</h2>
-    <div class="tag-container">
-      <div class="tag">Career</div>
-      <div class="tag">Management</div>
-      <div class="tag">Software Engineering</div>
-      <div class="tag">Career Coaching</div>
-      <div class="tag">Interview</div>
-      <div class="tag">Product Design</div>
-      <div class="tag">UX Design</div>
-      <div class="tag">Career Development</div>
-      <div class="tag">Machine Learning</div>
-      <div class="tag">Strategy</div>
-      <div class="tag">Coaching</div>
-      <div class="tag">Growth</div>
-      <div class="tag">Python</div>
-      <div class="tag cta">View All Category</div>
-    </div>
-  </section>
-
+  
 
   <section class="mentor-action-wrapper">
     <div class="animated-dot dot-left"></div>
@@ -1299,14 +1404,14 @@
   </div>
 </div>
 
-
+ 
   
   <footer>
     <div class="column">
       <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Logo_sample.png" alt="VisMen Logo" height="40">
       <p>Stay Connected</p>
-      <p>Sales Inquiries<br>email: sales@vismen.com<br>call: +91-1234567890</p>
-      <p>Support Inquiries<br>email: support@vismen.com</p>
+      <p>call: +91 9390981160</p>
+      <p>email: info@vismen.com</p>
     </div>
     <div class="column">
       <h4>Company</h4>
@@ -1418,6 +1523,38 @@
     localStorage.removeItem("menteeName");
     window.location.href = "index.html";
   }
+</script>
+
+<script>
+  async function loadMentors() {
+    try {
+      const response = await fetch('/api/mentors'); // ensure this endpoint is exposed in Express
+      const mentors = await response.json();
+
+      const container = document.getElementById('mentorContainer');
+      container.innerHTML = '';
+
+      mentors.forEach(mentor => {
+        const card = document.createElement('div');
+        card.className = 'mentor-card';
+
+        card.innerHTML = `
+          <img src="${mentor.image}" alt="${mentor.name}" class="mentor-img"/>
+          <h3>${mentor.name}</h3>
+          <p class="mentor-title">${mentor.title} at ${mentor.company}</p>
+          <div class="mentor-tags">
+            ${mentor.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    } catch (error) {
+      console.error('Error loading mentors:', error);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadMentors);
 </script>
 </body>
 </html>

@@ -52,6 +52,15 @@ app.post("/api/mentors", async (req, res) => {
   }
 });
 
+app.get('/api/mentors', async (req, res) => {
+  try {
+    const mentors = await Mentor.find({});
+    res.json(mentors);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch mentors' });
+  }
+});
+
 app.get("/api/mentors", async (req, res) => {
   try {
     const mentors = await Mentor.find();
