@@ -137,19 +137,16 @@
 <section class="signup-section">
   <div class="signup-form">
     <h2>Create Your Mentor Account</h2>
-    <form id="mentorSignupForm">
+    <form id="mentorSignupForm" action="/api/mentors" method="POST" enctype="multipart/form-data">
       <input type="text" name="name" placeholder="Name" required />
       <input type="text" name="title" placeholder="Title (e.g., QA Mentor)" required />
       <input type="text" name="company" placeholder="Company (e.g., Amazon)" required />
       <input type="text" name="tags" placeholder="Comma-separated tags" required />
-      <input type="text" name="image" placeholder="Profile Image URL" required />
-      <input type="email" name="email" placeholder="Email Address" required />   <!-- Moved inside -->
-      <input type="password" name="password" placeholder="Password" required /> <!-- Moved inside -->
+      <input type="file" name="image" accept="image/*" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <input type="password" name="password" placeholder="Password" required />
       <button type="submit">Create Account</button>
     </form>
-    
-    
-    
   </div>
 </section>
 
@@ -164,21 +161,12 @@
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const data = {
-        name: form.elements["name"].value,
-        title: form.elements["title"].value,
-        company: form.elements["company"].value,
-        tags: form.elements["tags"].value,
-        image: form.elements["image"].value,
-        email: form.elements["email"].value,
-        password: form.elements["password"].value,
-      };
+      const formData = new FormData(form);
 
       try {
         const res = await fetch("/api/mentors", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: formData,
         });
 
         const result = await res.json();
@@ -195,7 +183,6 @@
     });
   });
 </script>
-
 
 </body>
 </html>

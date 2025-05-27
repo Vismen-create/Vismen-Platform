@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const multer = require("multer");
+
 
 const app = express();
 // const PORT = 3000;
@@ -13,6 +15,19 @@ const menteesFile = path.join(__dirname, 'data', 'mentees.json');
 const Mentor = require('./models/Mentor');
 const Mentee = require('./models/Mentee');
 const Session = require('./models/Session');
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/uploads");  // ensure this path exists
+  },
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
@@ -30,27 +45,29 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 // ✅ Save mentor to MongoDB
-app.post("/api/mentors", async (req, res) => {
+app.post("/api/mentors", upload.single("image"), async (req, res) => {
   try {
-    const { name, title, company, tags, image, email, password } = req.body;
+    const { name, title, company, tags, email, password } = req.body;
 
     const newMentor = new Mentor({
       name,
       title,
       company,
-      tags: tags.split(',').map(tag => tag.trim()),
-      image,
+      tags: tags.split(",").map(t => t.trim()),
       email,
-      password
+      password,
+      image: `/uploads/${req.file.filename}`,  // image path to save
     });
 
     await newMentor.save();
-    res.status(201).json({ message: "Mentor registered successfully!" });
+    res.status(201).json({ message: "Mentor registered successfully." });
   } catch (err) {
     console.error("❌ Error saving mentor:", err);
     res.status(500).json({ error: "Server error while saving mentor." });
   }
 });
+
+
 
 app.get('/api/mentors', async (req, res) => {
   try {
