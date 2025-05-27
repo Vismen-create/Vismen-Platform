@@ -20,7 +20,6 @@ const Session = require('./models/Session');
 
 // CORS setup
 
-const cors = require('cors');
 app.use(cors({
   origin: ['https://www.vismen.com'], // include the www domain
   credentials: true
