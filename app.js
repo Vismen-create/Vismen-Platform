@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const multer = require("multer");
-
+const multer = require('multer');
+const cors = require('cors');
 
 const app = express();
 // const PORT = 3000;
@@ -12,27 +12,44 @@ const app = express();
 const mentorsFile = path.join(__dirname, 'data', 'mentors.json');
 const menteesFile = path.join(__dirname, 'data', 'mentees.json');
 
+// Model imports
+
 const Mentor = require('./models/Mentor');
 const Mentee = require('./models/Mentee');
 const Session = require('./models/Session');
 
+// CORS setup
+
+const cors = require('cors');
+app.use(cors({
+  origin: ['https://www.vismen.com'], // include the www domain
+  credentials: true
+}));
+
+
+// Multer storage setup
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public/uploads");  // ensure this path exists
+    cb(null, 'public/uploads');
   },
   filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname;
+    const uniqueName = Date.now() + '-' + file.originalname;
     cb(null, uniqueName);
-  },
+  }
 });
+const upload = multer({ storage });
 
-const upload = multer({ storage: storage });
+// Middleware
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+
+
+// MongoDB Connection
 
 console.log("Connecting to MongoDB with URI:", process.env.MONGO_URI);
 
@@ -45,34 +62,28 @@ mongoose.connect(process.env.MONGO_URI, {
   console.error("❌ MongoDB connection error:", err);
 });
 
-// ✅ Save mentor to MongoDB
+// Mentor Signup with file upload
 app.post("/api/mentors", upload.single("image"), async (req, res) => {
   try {
     const { name, title, company, tags, email, password } = req.body;
-
-    if (!req.file) {
-      return res.status(400).json({ error: "Image upload failed." });
-    }
+    if (!req.file) return res.status(400).json({ error: "Image upload failed." });
 
     const newMentor = new Mentor({
       name,
       title,
       company,
-      tags: tags.split(",").map(t => t.trim()),
+      tags: tags.split(',').map(t => t.trim()),
       email,
       password,
-      image: `/uploads/${req.file.filename}` // This is now valid
+      image: `/uploads/${req.file.filename}`
     });
-
     await newMentor.save();
     res.status(201).json({ message: "Mentor registered successfully." });
-
   } catch (err) {
     console.error("❌ Error saving mentor:", err);
     res.status(500).json({ error: "Server error while saving mentor." });
   }
 });
-
 
 
 
@@ -85,7 +96,8 @@ app.get('/api/mentors', async (req, res) => {
   }
 });
 
-app.get("/api/mentors", async (req, res) => {
+// Fetch all mentors
+app.get('/api/mentors', async (req, res) => {
   try {
     const mentors = await Mentor.find();
     const formatted = mentors.map(m => ({
@@ -243,11 +255,6 @@ app.get('/get-mentee-sessions', async (req, res) => {
 });
 
 
-const cors = require('cors');
-app.use(cors({
-  origin: ['https://www.vismen.com'], // include the www domain
-  credentials: true
-}));
 
 
 
