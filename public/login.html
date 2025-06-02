@@ -176,9 +176,9 @@
   <header>
     <a href="index.html" class="logo" style="text-decoration: none;">VISMEN</a>
     <nav>
-      <a href="#">Browse All Mentors</a>
+      <a href="#" id="browseMentorsLink">Browse All Mentors</a>
       <a href="#">Membership</a>
-      <a href="#">Become a Mentor</a>
+      <a href="MentorSignup.html">Become a Mentor</a>
     </nav>
     <div>
         <a href="#" class="btn btn-outline" style="text-decoration: none;" id="signupBtn">Sign Up</a>
@@ -188,7 +188,6 @@
 
   <section class="login-container">
     <h2>Login to VisMen</h2>
-
     <div class="role-switcher">
       <button class="role-btn active" onclick="setRole('Mentor', this)">Mentor</button>
       <button class="role-btn" onclick="setRole('Mentee', this)">Mentee</button>
@@ -213,9 +212,9 @@
   </footer>
 
   <!-- Role Selection Modal -->
-<div id="roleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center;">
+  <div id="roleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center;">
     <div style="background:#fff; padding:30px 40px; border-radius:16px; text-align:center; position:relative;">
-<span onclick="closeModal()" style="position:absolute; right:20px; top:10px; font-size:24px; color:#333; cursor:pointer; font-weight:bold;" onmouseover="this.style.color='#e11d48'" onmouseout="this.style.color='#333'">&times;</span>
+      <span onclick="closeModal()" style="position:absolute; right:20px; top:10px; font-size:24px; color:#333; cursor:pointer; font-weight:bold;" onmouseover="this.style.color='#e11d48'" onmouseout="this.style.color='#333'">&times;</span>
       <h2 style="margin-bottom: 25px; color:#1e293b;">Choose Your Role</h2>
       <button onclick="redirectToSignup('Mentor')" style="margin-right:20px; background:#6b21a8; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">Mentor</button>
       <button onclick="redirectToSignup('Mentee')" style="background:#6b21a8; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">Mentee</button>
@@ -229,7 +228,7 @@
       el.classList.add('active');
     }
 
-    document.querySelector('#signupBtn').addEventListener('click', function(e) {
+    document.getElementById('signupBtn').addEventListener('click', function(e) {
       e.preventDefault();
       document.getElementById("roleModal").style.display = "flex";
     });
@@ -245,6 +244,17 @@
         window.location.href = 'MenteeSignup.html';
       }
     }
+
+    document.getElementById("browseMentorsLink").addEventListener("click", function (e) {
+      e.preventDefault();
+      const isLoggedIn = localStorage.getItem("loggedIn");
+      const menteeEmail = localStorage.getItem("menteeEmail");
+      if (!isLoggedIn || !menteeEmail) {
+        alert("Please log in as a mentee to continue.");
+      } else {
+        window.location.href = "browse-mentors.html";
+      }
+    });
 
     document.querySelector('#loginForm').addEventListener('submit', async function (e) {
       e.preventDefault();
