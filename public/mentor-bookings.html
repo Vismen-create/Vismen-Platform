@@ -8,14 +8,18 @@
   <style>
     * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
     body { display: flex; background: #f4f6fc; min-height: 100vh; }
-    .sidebar { background: #0d47a1; color: white; width: 220px; padding-top: 30px; position: fixed; top: 0; bottom: 0; }
+    .sidebar {
+        position: fixed; top: 70px; left: 0; width: 220px;
+        height: calc(100% - 70px); background-color: #1e40af;
+        color: white; padding: 20px 0;
+      }
     .sidebar h2 { text-align: center; color: white; margin-bottom: 30px; }
     .sidebar ul { list-style: none; padding: 0; }
     .sidebar ul li { padding: 15px 20px; }
     .sidebar ul li a { color: white; text-decoration: none; display: block; }
     .sidebar ul li:hover, .sidebar ul li.active { background: #1565c0; }
     .main { margin-left: 220px; width: calc(100% - 220px); display: flex; flex-direction: column; }
-    .navbar { background: linear-gradient(to right, #6b21a8, #2563eb); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar {background-color: #f97316; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
     .navbar h1 { font-size: 1.5rem; }
     .navbar nav a { color: white; margin-left: 20px; font-weight: 600; text-decoration: none; }
     .container { padding: 30px; background: #f4f6fc; flex-grow: 1; }
