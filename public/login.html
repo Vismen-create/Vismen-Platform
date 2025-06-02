@@ -131,24 +131,21 @@
       background-color: #ea580c;
     }
 
-
     .forgot-password {
-  text-align: center;
-  margin-top: 5px;
-  font-weight: 500;
-}
+      text-align: center;
+      margin-top: 5px;
+      font-weight: 500;
+    }
 
-.forgot-password a {
-  color: white;
-  font-size: 0.9rem;
-  text-decoration: none;
-}
+    .forgot-password a {
+      color: white;
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
 
-.forgot-password a:hover {
-  text-decoration: underline;
-}
-
-
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
 
     footer {
       text-align: center;
@@ -184,7 +181,7 @@
       <a href="#">Become a Mentor</a>
     </nav>
     <div>
-        <a href="MentorSignup.html" class="btn btn-outline" style="text-decoration: none;">Sign Up</a>
+        <a href="#" class="btn btn-outline" style="text-decoration: none;" id="signupBtn">Sign Up</a>
         <button class="btn btn-orange">Log In</button>
     </div>
   </header>
@@ -197,31 +194,33 @@
       <button class="role-btn" onclick="setRole('Mentee', this)">Mentee</button>
     </div>
 
-
     <form id="loginForm">
       <input type="hidden" id="role" name="role" value="Mentor" />
-
       <label for="email">Email Address</label>
       <input type="email" id="email" name="email" required />
-
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required />
-
       <button class="submit-btn" type="submit">Log In</button>
     </form>
   </section>
 
-
-  
   <div class="forgot-password">
     <a href="forgot-password.html">Forgot Password?</a>
   </div>
-  
-
 
   <footer>
     &copy; 2025 VisMen IT Solutions. All rights reserved.
   </footer>
+
+  <!-- Role Selection Modal -->
+<div id="roleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:30px 40px; border-radius:16px; text-align:center; position:relative;">
+      <span onclick="closeModal()" style="position:absolute; right:20px; top:10px; font-size:20px; cursor:pointer;">&times;</span>
+      <h2 style="margin-bottom: 25px; color:#1e293b;">Choose Your Role</h2>
+      <button onclick="redirectToSignup('Mentor')" style="margin-right:20px; background:#6b21a8; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">Mentor</button>
+      <button onclick="redirectToSignup('Mentee')" style="background:#6b21a8; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">Mentee</button>
+    </div>
+  </div>
 
   <script>
     function setRole(role, el) {
@@ -229,45 +228,57 @@
       document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
       el.classList.add('active');
     }
-  </script>
 
-
-<script>
-  document.querySelector('#loginForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const email = document.querySelector('#email').value.trim();
-    const password = document.querySelector('#password').value.trim();
-    const role = document.querySelector('#role').value;
-
-    const res = await fetch('/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, password, role })
+    document.querySelector('#signupBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById("roleModal").style.display = "flex";
     });
 
-    const result = await res.json();
-
-    if (result.success) {
-      localStorage.setItem("loggedIn", "true");
-
-      if (role === 'Mentee') {
-        localStorage.setItem('menteeEmail', email);
-localStorage.setItem('menteeName', result.name || "Mentee");
-        window.location.href = '/mentee-dashboard.html';
-      } else {
-       localStorage.setItem("mentorName", result.name || "Mentor");
-       localStorage.setItem('email', email); // ✅ Add this line
-window.location.href = '/mentor-dashboard.html';      }
-
-    } else {
-      alert('Invalid email or password. Please try again.');
+    function closeModal() {
+      document.getElementById("roleModal").style.display = "none";
     }
-  });
-</script>
 
+    function redirectToSignup(role) {
+      if (role === 'Mentor') {
+        window.location.href = 'MentorSignup.html';
+      } else {
+        window.location.href = 'MenteeSignup.html';
+      }
+    }
+
+    document.querySelector('#loginForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const email = document.querySelector('#email').value.trim();
+      const password = document.querySelector('#password').value.trim();
+      const role = document.querySelector('#role').value;
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password, role })
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        localStorage.setItem("loggedIn", "true");
+
+        if (role === 'Mentee') {
+          localStorage.setItem('menteeEmail', email);
+          localStorage.setItem('menteeName', result.name || "Mentee");
+          window.location.href = '/mentee-dashboard.html';
+        } else {
+          localStorage.setItem("mentorName", result.name || "Mentor");
+          localStorage.setItem('email', email);
+          window.location.href = '/mentor-dashboard.html';
+        }
+      } else {
+        alert('Invalid email or password. Please try again.');
+      }
+    });
+  </script>
 
 </body>
 </html>
