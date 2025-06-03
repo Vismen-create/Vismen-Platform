@@ -9,8 +9,8 @@
     * { box-sizing: border-box; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
     body { display: flex; background: #f4f6fc; min-height: 100vh; }
     .sidebar {
-        position: fixed; top: 70px; left: 0; width: 220px;
-        height: calc(100% - 70px); background-color: #1e40af;
+        position: fixed; top: 0; left: 0; width: 220px;
+        height: 100vh; background-color: #1e40af;
         color: white; padding: 20px 0;
       }
     .sidebar h2 { text-align: center; color: white; margin-bottom: 30px; }
@@ -18,10 +18,37 @@
     .sidebar ul li { padding: 15px 20px; }
     .sidebar ul li a { color: white; text-decoration: none; display: block; }
     .sidebar ul li:hover, .sidebar ul li.active { background: #1565c0; }
-    .main { margin-left: 220px; width: calc(100% - 220px); display: flex; flex-direction: column; }
-    .navbar {background-color: #f97316; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .navbar h1 { font-size: 1.5rem; }
-    .navbar nav a { color: white; margin-left: 20px; font-weight: 600; text-decoration: none; }
+    .main { margin-left: 220px; width: calc(100% - 220px); display: flex; flex-direction: column; min-height: 100vh; }
+    .navbar {
+      background-color: #f97316;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar h1 { font-size: 1.5rem; margin-right: auto; }
+    .navbar nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-grow: 1;
+    }
+    .navbar nav a {
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .logout-btn {
+      background: white;
+      color: #f97316;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
     .container { padding: 30px; background: #f4f6fc; flex-grow: 1; }
     .container h2 { margin-bottom: 20px; font-size: 24px; font-weight: 700; }
     .search-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 20px; }
@@ -37,7 +64,7 @@
     .status-join { background: #2563eb; }
     .status-recording { background: #2196f3; }
     .status-missed { background: #e53935; }
-    footer { background: #0d47a1; color: white; text-align: center; padding: 10px; }
+    footer { background: #0d47a1; color: white; text-align: center; padding: 10px; margin-top: auto; }
   </style>
 </head>
 <body>
@@ -60,6 +87,7 @@
         <a href="#">Membership</a>
         <a href="#">Become a Mentor</a>
       </nav>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
     <div class="container">
@@ -94,8 +122,13 @@
   </div>
 
   <script>
-const mentorName = localStorage.getItem("mentorName"); // set during login
+const mentorName = localStorage.getItem("mentorName");
 let allSessions = [];
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 
 function getStatusClass(status) {
   if (status === "upcoming") return "status-join";
@@ -160,7 +193,7 @@ async function loadMentorSessions() {
     if (!Array.isArray(sessions)) throw new Error("Invalid data");
 
     allSessions = sessions;
-    renderSessions("Today"); // default tab
+    renderSessions("Today");
 
   } catch (err) {
     console.error("Error:", err);
@@ -179,8 +212,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-</script>
-
-
+  </script>
 </body>
 </html>
